@@ -10,7 +10,7 @@ function RouteComponent() {
     return (
         <>
             <h1 className="text-3xl font-bold">
-                The one other page
+                Welcome to the one other page
             </h1>
             <Link to={"/"}>
                 <Button color={"primary"} endContent={<Gi3DMeeple/>}>Button</Button>
