@@ -13,7 +13,7 @@ function RouteComponent() {
                 Welcome to the one other page
             </h1>
             <Link to={"/"}>
-                <Button color={"primary"} endContent={<Gi3DMeeple/>}>Button</Button>
+                <Button color={"primary"} endContent={<Gi3DMeeple/>}>Go Back</Button>
             </Link>
         </>
     )

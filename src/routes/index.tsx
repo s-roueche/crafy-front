@@ -32,7 +32,7 @@ function RouteComponent() {
         </h1>
         <Link to={"/page2"}>
         <Button color={"primary"} endContent={<GoSmiley/>}>
-          Button
+          See More
         </Button>
         </Link>
       </>
