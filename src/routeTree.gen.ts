@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as Page2Import } from './routes/page2'
+import { Route as FeedImport } from './routes/feed'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
@@ -19,6 +20,12 @@ import { Route as IndexImport } from './routes/index'
 const Page2Route = Page2Import.update({
   id: '/page2',
   path: '/page2',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const FeedRoute = FeedImport.update({
+  id: '/feed',
+  path: '/feed',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -39,6 +46,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/feed': {
+      id: '/feed'
+      path: '/feed'
+      fullPath: '/feed'
+      preLoaderRoute: typeof FeedImport
+      parentRoute: typeof rootRoute
+    }
     '/page2': {
       id: '/page2'
       path: '/page2'
@@ -53,36 +67,41 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/feed': typeof FeedRoute
   '/page2': typeof Page2Route
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/feed': typeof FeedRoute
   '/page2': typeof Page2Route
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/feed': typeof FeedRoute
   '/page2': typeof Page2Route
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/page2'
+  fullPaths: '/' | '/feed' | '/page2'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/page2'
-  id: '__root__' | '/' | '/page2'
+  to: '/' | '/feed' | '/page2'
+  id: '__root__' | '/' | '/feed' | '/page2'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  FeedRoute: typeof FeedRoute
   Page2Route: typeof Page2Route
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  FeedRoute: FeedRoute,
   Page2Route: Page2Route,
 }
 
@@ -97,11 +116,15 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/feed",
         "/page2"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/feed": {
+      "filePath": "feed.tsx"
     },
     "/page2": {
       "filePath": "page2.tsx"

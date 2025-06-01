@@ -1,7 +1,11 @@
 import axios from "axios";
 
-async function getHello() {
+export async function getHello() {
     const response = await axios.get('http://localhost:3000');
     return response.data;
 }
-export {getHello};
+
+export async function getPublishedPosts() {
+    const response = await axios.get('http://localhost:3000/feed');
+    return response.data;
+}
