@@ -8,7 +8,7 @@ function RouteComponent() {
   
   return (
       <>
-        <h1 className="text-3xl font-bold justify-self-center">
+        <h1 className="text-4xl font-bold justify-self-center">
             Welcome to Crafy !
         </h1>
       </>
