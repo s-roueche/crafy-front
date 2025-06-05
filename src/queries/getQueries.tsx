@@ -5,7 +5,7 @@ export async function getHello() {
     return response.data;
 }
 
-export async function getPublishedPosts() {
-    const response = await axios.get('http://localhost:3000/feed');
+export async function getAllReports() {
+    const response = await axios.get('http://localhost:3000/reports');
     return response.data;
 }

@@ -11,21 +11,21 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as Page2Import } from './routes/page2'
-import { Route as FeedImport } from './routes/feed'
+import { Route as ReportsImport } from './routes/reports'
+import { Route as CompaniesImport } from './routes/companies'
 import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
-const Page2Route = Page2Import.update({
-  id: '/page2',
-  path: '/page2',
+const ReportsRoute = ReportsImport.update({
+  id: '/reports',
+  path: '/reports',
   getParentRoute: () => rootRoute,
 } as any)
 
-const FeedRoute = FeedImport.update({
-  id: '/feed',
-  path: '/feed',
+const CompaniesRoute = CompaniesImport.update({
+  id: '/companies',
+  path: '/companies',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,18 +46,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/feed': {
-      id: '/feed'
-      path: '/feed'
-      fullPath: '/feed'
-      preLoaderRoute: typeof FeedImport
+    '/companies': {
+      id: '/companies'
+      path: '/companies'
+      fullPath: '/companies'
+      preLoaderRoute: typeof CompaniesImport
       parentRoute: typeof rootRoute
     }
-    '/page2': {
-      id: '/page2'
-      path: '/page2'
-      fullPath: '/page2'
-      preLoaderRoute: typeof Page2Import
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsImport
       parentRoute: typeof rootRoute
     }
   }
@@ -67,42 +67,42 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/feed': typeof FeedRoute
-  '/page2': typeof Page2Route
+  '/companies': typeof CompaniesRoute
+  '/reports': typeof ReportsRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/feed': typeof FeedRoute
-  '/page2': typeof Page2Route
+  '/companies': typeof CompaniesRoute
+  '/reports': typeof ReportsRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/feed': typeof FeedRoute
-  '/page2': typeof Page2Route
+  '/companies': typeof CompaniesRoute
+  '/reports': typeof ReportsRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/feed' | '/page2'
+  fullPaths: '/' | '/companies' | '/reports'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/feed' | '/page2'
-  id: '__root__' | '/' | '/feed' | '/page2'
+  to: '/' | '/companies' | '/reports'
+  id: '__root__' | '/' | '/companies' | '/reports'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  FeedRoute: typeof FeedRoute
-  Page2Route: typeof Page2Route
+  CompaniesRoute: typeof CompaniesRoute
+  ReportsRoute: typeof ReportsRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  FeedRoute: FeedRoute,
-  Page2Route: Page2Route,
+  CompaniesRoute: CompaniesRoute,
+  ReportsRoute: ReportsRoute,
 }
 
 export const routeTree = rootRoute
@@ -116,18 +116,18 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/feed",
-        "/page2"
+        "/companies",
+        "/reports"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/feed": {
-      "filePath": "feed.tsx"
+    "/companies": {
+      "filePath": "companies.tsx"
     },
-    "/page2": {
-      "filePath": "page2.tsx"
+    "/reports": {
+      "filePath": "reports.tsx"
     }
   }
 }
