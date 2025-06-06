@@ -9,8 +9,8 @@ import {
   getKeyValue,
 } from "@heroui/table";
 import { useQuery } from "@tanstack/react-query";
-import { getAllReports } from "../queries/getQueries.tsx";
-import type {Report} from "../queries/interfaces.tsx";
+import {getAllCompanies, getAllReports} from "../queries/getQueries.tsx";
+import type {Company, Report} from "../queries/interfaces.tsx";
 
 
 export const Route = createFileRoute('/reports')({
@@ -32,14 +32,27 @@ const columns = [
   },
 ];
 
+type Row = {
+  key: string,
+  month: string,
+  client: string,
+  comment: string,
+}
+
 function RouteComponent() {
-  const { isLoading, isError, data, error } = useQuery({
+  const reportsQuery = useQuery({
     queryKey: ['allReports'],
     queryFn: getAllReports,
     retryDelay: 1000
   });
   
-  if (isLoading) {
+  const companiesQuery = useQuery({
+    queryKey: ['allCompanies'],
+    queryFn: getAllCompanies,
+    retryDelay: 1000
+  });
+  
+  if (reportsQuery.isLoading) {
     return (
         <>
           <h1 className="text-2xl font-bold justify-self-center p-10">
@@ -50,32 +63,42 @@ function RouteComponent() {
   );
   }
   
-  if (isError && error instanceof Error) {
+  if (reportsQuery.isError) {
     return (
         <>
           <h1 className="text-2xl font-bold justify-self-center p-10">
             Reports
           </h1>
-          <span>Error: {error.message}</span>
+          <span>Error: {reportsQuery.error.message}</span>
         </>
     );
   }
   
-  type Row = {
-      key: string,
-      month: Date,
-      client: string,
-      comment: string,
+  if (companiesQuery.isError) {
+    return (
+        <>
+          <h1 className="text-2xl font-bold justify-self-center p-10">
+            Reports
+          </h1>
+          <span>Error: {companiesQuery.error.message}</span>
+        </>
+    );
   }
   
-  const rows: Row[] = data.map((report: Report, index: number) => {
+  const rows: Row[] = reportsQuery.data.map((report: Report, index: number) => {
+    const options: Intl.DateTimeFormatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    };
+    const client = companiesQuery.data.find((company: Company) => company.id === report.clientId)
       
-      return ({
-          key: String(index),
-          month: report.monthReport,
-          clientId: report.clientId,
-          comment: report.comment,
-      })
+    return ({
+        key: String(index),
+        month: new Date(report.monthReport).toLocaleDateString(undefined, options),
+        client: client.businessName,
+        comment: report.comment,
+    })
   });
   
   return (
