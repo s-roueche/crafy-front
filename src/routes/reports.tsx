@@ -9,7 +9,7 @@ import {
   getKeyValue,
 } from "@heroui/table";
 import { useQuery } from "@tanstack/react-query";
-import {getAllCompanies, getAllReports} from "../queries/getQueries.tsx";
+import {getAllCompaniesByUser, getAllReportsByUser} from "../queries/getQueries.tsx";
 import type {Company, Report} from "../queries/interfaces.tsx";
 
 
@@ -42,13 +42,13 @@ type Row = {
 function RouteComponent() {
   const reportsQuery = useQuery({
     queryKey: ['allReports'],
-    queryFn: getAllReports,
+    queryFn: () => getAllReportsByUser('b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5'),
     retryDelay: 1000
   });
   
   const companiesQuery = useQuery({
     queryKey: ['allCompanies'],
-    queryFn: getAllCompanies,
+    queryFn: () => getAllCompaniesByUser('b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5'),
     retryDelay: 1000
   });
   
@@ -92,7 +92,7 @@ function RouteComponent() {
         day: 'numeric'
     };
     const client = companiesQuery.data.find((company: Company) => company.id === report.clientId)
-      
+    
     return ({
         key: String(index),
         month: new Date(report.monthReport).toLocaleDateString(undefined, options),

@@ -9,7 +9,7 @@ import {
   getKeyValue,
 } from "@heroui/table";
 import { useQuery } from "@tanstack/react-query";
-import { getAllCompanies } from "../queries/getQueries.tsx";
+import { getAllCompaniesByUser } from "../queries/getQueries.tsx";
 import type {Company} from "../queries/interfaces.tsx";
 
 
@@ -27,7 +27,7 @@ const columns = [
 function RouteComponent() {
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ['allReports'],
-    queryFn: getAllCompanies,
+    queryFn: () => getAllCompaniesByUser('b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5'),
     retryDelay: 1000
   });
   

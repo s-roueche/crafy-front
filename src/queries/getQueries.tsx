@@ -1,16 +1,12 @@
 import axios from "axios";
+import type {Company, Report} from "./interfaces.tsx";
 
-export async function getAllReports() {
+export async function getAllReportsByUser(userId: string) {
     const response = await axios.get('http://localhost:3000/report');
-    return response.data;
+    return response.data.filter((report: Report) => report.userId === userId);
 }
 
-export async function getCompanyById(id: string) {
-    const response = await axios.get('http://localhost:3000/company/' + id);
-    return response.data;
-}
-
-export async function getAllCompanies() {
+export async function getAllCompaniesByUser(userId: string) {
     const response = await axios.get('http://localhost:3000/company');
-    return response.data;
+    return response.data.filter((company: Company) => company.userCreatorId === userId);
 }
