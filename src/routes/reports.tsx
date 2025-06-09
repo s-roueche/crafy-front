@@ -11,35 +11,38 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import {getAllCompaniesByUser, getAllReportsByUser} from "../queries/getQueries.tsx";
 import type {Company, Report} from "../queries/interfaces.tsx";
+import {useTranslation} from "react-i18next";
 
 
 export const Route = createFileRoute('/reports')({
   component: RouteComponent,
 })
 
-const columns = [
-  {
-    key: "month",
-    label: "MONTH",
-  },
-  {
-    key: "client",
-    label: "CLIENT",
-  },
-  {
-    key: "comment",
-    label: "COMMENT",
-  },
-];
-
-type Row = {
-  key: string,
-  month: string,
-  client: string,
-  comment: string,
-}
-
 function RouteComponent() {
+  const {t} = useTranslation()
+  
+  const columns = [
+    {
+      key: "month",
+      label: t("MONTH"),
+    },
+    {
+      key: "client",
+      label: t('CLIENT'),
+    },
+    {
+      key: "comment",
+      label: t('COMMENT'),
+    },
+  ];
+  
+  type Row = {
+    key: string,
+    month: string,
+    client: string,
+    comment: string,
+  }
+  
   const reportsQuery = useQuery({
     queryKey: ['allReports'],
     queryFn: () => getAllReportsByUser('b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5'),
@@ -56,7 +59,7 @@ function RouteComponent() {
     return (
         <>
           <h1 className="text-2xl font-bold justify-self-center p-10">
-            Reports
+            {t('reports')}
           </h1>
           <span>Loading...</span>
         </>
@@ -67,7 +70,7 @@ function RouteComponent() {
     return (
         <>
           <h1 className="text-2xl font-bold justify-self-center p-10">
-            Reports
+            {t('reports')}
           </h1>
           <span>Error: {reportsQuery.error.message}</span>
         </>
@@ -78,7 +81,7 @@ function RouteComponent() {
     return (
         <>
           <h1 className="text-2xl font-bold justify-self-center p-10">
-            Reports
+            {t('reports')}
           </h1>
           <span>Error: {companiesQuery.error.message}</span>
         </>
@@ -104,7 +107,7 @@ function RouteComponent() {
   return (
       <>
         <h1 className="text-2xl font-bold justify-self-center p-10">
-          Reports
+          {t('reports')}
         </h1>
         <Table aria-label="reports table">
           <TableHeader columns={columns}>

@@ -11,20 +11,23 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { getAllCompaniesByUser } from "../queries/getQueries.tsx";
 import type {Company} from "../queries/interfaces.tsx";
+import {useTranslation} from "react-i18next";
 
 
 export const Route = createFileRoute('/companies')({
   component: RouteComponent,
 })
 
-const columns = [
-  {
-    key: "name",
-    label: "NAME",
-  },
-];
-
 function RouteComponent() {
+  const {t} = useTranslation()
+  
+  const columns = [
+    {
+      key: "name",
+      label: t('NAME'),
+    },
+  ];
+  
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ['allReports'],
     queryFn: () => getAllCompaniesByUser('b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5'),
@@ -35,7 +38,7 @@ function RouteComponent() {
     return (
         <>
           <h1 className="text-2xl font-bold justify-self-center p-10">
-            Reports
+            {t('companies')}
           </h1>
           <span>Loading...</span>
         </>
@@ -46,7 +49,7 @@ function RouteComponent() {
     return (
         <>
           <h1 className="text-2xl font-bold justify-self-center p-10">
-            Reports
+            {t('companies')}
           </h1>
           <span>Error: {error.message}</span>
         </>
@@ -69,7 +72,7 @@ function RouteComponent() {
   return (
       <>
         <h1 className="text-2xl font-bold justify-self-center p-10">
-          Companies
+          {t('companies')}
         </h1>
         <Table aria-label="reports table">
           <TableHeader columns={columns}>

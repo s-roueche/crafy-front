@@ -3,12 +3,15 @@ import {TanStackRouterDevtools} from "@tanstack/react-router-devtools";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import {Divider, Listbox, ListboxItem, ListboxSection} from "@heroui/react";
 import { FaPenSquare } from "icons-react/fa";
+import {useTranslation} from "react-i18next";
 
 export const Route = createRootRoute({
   component: RootComponent,
 })
 
 function RootComponent() {
+  const {t} = useTranslation()
+  
   return (
     <>
         <div className="flex min-h-screen">
@@ -26,10 +29,10 @@ function RootComponent() {
                     </ListboxSection>
                     <ListboxSection>
                         <ListboxItem key={"reports"} href={"/reports"}>
-                            <div className="text-lg">Reports</div>
+                            <div className="text-lg">{t('reports')}</div>
                         </ListboxItem>
                         <ListboxItem key={"companies"} href={"/companies"}>
-                            <div className="text-lg">Companies</div>
+                            <div className="text-lg">{t('companies')}</div>
                         </ListboxItem>
                     </ListboxSection>
                 </Listbox>
