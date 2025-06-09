@@ -18,7 +18,8 @@ i18next
             NAME: 'NAME',
             MONTH: 'MONTH',
             CLIENT: 'CLIENT',
-            COMMENT: 'COMMENT'
+            COMMENT: 'COMMENT',
+            Report: 'Report'
           }
         },
         fr : {
@@ -29,7 +30,8 @@ i18next
             NAME: 'NOM',
             MONTH: 'MOIS',
             CLIENT: 'CLIENT',
-            COMMENT: 'COMMENTAIRE'
+            COMMENT: 'COMMENTAIRE',
+            Report: 'Rapport'
           }
         }
       }

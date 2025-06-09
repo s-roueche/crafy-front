@@ -12,6 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllCompaniesByUser } from "../queries/getQueries.tsx";
 import type {Company} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
+import {useState} from "react";
 
 
 export const Route = createFileRoute('/companies')({
@@ -33,6 +34,8 @@ function RouteComponent() {
     queryFn: () => getAllCompaniesByUser('b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5'),
     retryDelay: 1000
   });
+  
+  const [selectedKeys, setSelectedKeys] = useState([]);
   
   if (isLoading) {
     return (
@@ -74,7 +77,14 @@ function RouteComponent() {
         <h1 className="text-2xl font-bold justify-self-center p-10">
           {t('companies')}
         </h1>
-        <Table aria-label="reports table">
+        <Table
+            aria-label="reports table"
+            selectionMode={'single'}
+            selectedKeys={selectedKeys}
+            onSelectionChange={() => {
+              setSelectedKeys([]);
+            }}
+        >
           <TableHeader columns={columns}>
             {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
           </TableHeader>

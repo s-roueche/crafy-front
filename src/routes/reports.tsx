@@ -8,10 +8,13 @@ import {
   TableCell,
   getKeyValue,
 } from "@heroui/table";
+import { useDisclosure } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
 import {getAllCompaniesByUser, getAllReportsByUser} from "../queries/getQueries.tsx";
 import type {Company, Report} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
+import ReportDetail from "../components/ReportDetail.tsx";
+import {useState} from "react";
 
 
 export const Route = createFileRoute('/reports')({
@@ -19,6 +22,7 @@ export const Route = createFileRoute('/reports')({
 })
 
 function RouteComponent() {
+  const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const {t} = useTranslation()
   
   const columns = [
@@ -54,6 +58,8 @@ function RouteComponent() {
     queryFn: () => getAllCompaniesByUser('b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5'),
     retryDelay: 1000
   });
+  
+  const [selectedKeys, setSelectedKeys] = useState([]);
   
   if (reportsQuery.isLoading) {
     return (
@@ -109,7 +115,15 @@ function RouteComponent() {
         <h1 className="text-2xl font-bold justify-self-center p-10">
           {t('reports')}
         </h1>
-        <Table aria-label="reports table">
+        <Table
+            aria-label="reports table"
+            selectionMode={'single'}
+            selectedKeys={selectedKeys}
+            onSelectionChange={() => {
+              setSelectedKeys([]);
+              onOpen()
+            }}
+        >
           <TableHeader columns={columns}>
             {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
           </TableHeader>
@@ -121,6 +135,7 @@ function RouteComponent() {
             )}
           </TableBody>
         </Table>
+        <ReportDetail isOpen={isOpen} onOpenChange={onOpenChange}/>
       </>
   );
 }
