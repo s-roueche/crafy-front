@@ -4,7 +4,6 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  Button,
 } from "@heroui/react";
 import type {Report} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
@@ -20,7 +19,7 @@ export default function ReportDetail(props : {
   return (
       <Modal isOpen={props.isOpen} onOpenChange={props.onOpenChange}>
         <ModalContent>
-          {(onClose) => (
+          {() => (
               <>
                 <ModalHeader className="flex flex-col gap-1">{t('Report')}</ModalHeader>
                 <ModalBody>
@@ -29,9 +28,6 @@ export default function ReportDetail(props : {
                   </p>
                 </ModalBody>
                 <ModalFooter>
-                  <Button color="danger" variant="light" onPress={onClose}>
-                    Close
-                  </Button>
                 </ModalFooter>
               </>
           )}

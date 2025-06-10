@@ -15,6 +15,7 @@ import type {Company, Report} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
 import ReportDetail from "../components/ReportDetail.tsx";
 import {useState} from "react";
+import formatDate from "../dateFormatting.tsx"
 
 
 export const Route = createFileRoute('/reports')({
@@ -95,16 +96,12 @@ function RouteComponent() {
   }
   
   const rows: Row[] = reportsQuery.data.map((report: Report, index: number) => {
-    const options: Intl.DateTimeFormatOptions = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-    };
-    const client = companiesQuery.data.find((company: Company) => company.id === report.clientId)
+    const client = companiesQuery.data.find((company: Company) => company.id === report.clientId);
+    const formattedDate = formatDate(new Date(report.monthReport));
     
     return ({
         key: String(index),
-        month: new Date(report.monthReport).toLocaleDateString(undefined, options),
+        month: `${t(formattedDate.month)} ${formattedDate.year}`,
         client: client.businessName,
         comment: report.comment,
     })

@@ -19,7 +19,19 @@ i18next
             MONTH: 'MONTH',
             CLIENT: 'CLIENT',
             COMMENT: 'COMMENT',
-            Report: 'Report'
+            Report: 'Report',
+            month1: 'January',
+            month2: 'February',
+            month3: 'March',
+            month4: 'April',
+            month5: 'May',
+            month6: 'June',
+            month7: 'July',
+            month8: 'August',
+            month9: 'September',
+            month10: 'October',
+            month11: 'November',
+            month12: 'December',
           }
         },
         fr : {
@@ -31,7 +43,19 @@ i18next
             MONTH: 'MOIS',
             CLIENT: 'CLIENT',
             COMMENT: 'COMMENTAIRE',
-            Report: 'Rapport'
+            Report: 'Rapport',
+            month1: 'Janvier',
+            month2: 'Février',
+            month3: 'Mars',
+            month4: 'Avril',
+            month5: 'Mai',
+            month6: 'Juin',
+            month7: 'Juillet',
+            month8: 'Août',
+            month9: 'Septembre',
+            month10: 'Octobre',
+            month11: 'Novembre',
+            month12: 'Décembre',
           }
         }
       }
