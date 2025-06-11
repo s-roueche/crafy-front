@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import {createFileRoute, Outlet, useNavigate} from '@tanstack/react-router'
 import {
   Table,
   TableHeader,
@@ -8,13 +8,10 @@ import {
   TableCell,
   getKeyValue,
 } from "@heroui/table";
-import { useDisclosure } from "@heroui/react";
 import { useQuery } from "@tanstack/react-query";
 import {getAllCompaniesByUser, getAllReportsByUser} from "../queries/getQueries.tsx";
 import type {Company, Report} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
-import ReportDetail from "../components/ReportDetail.tsx";
-import {useState} from "react";
 import formatDate from "../dateFormatting.tsx"
 
 
@@ -23,9 +20,9 @@ export const Route = createFileRoute('/$userId/reports')({
 })
 
 function RouteComponent() {
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const {t} = useTranslation();
   const { userId } = Route.useParams();
+  const navigate = useNavigate();
   
   const columns = [
     {
@@ -50,18 +47,16 @@ function RouteComponent() {
   }
   
   const reportsQuery = useQuery({
-    queryKey: ['allReports'],
+    queryKey: ['allReports', userId],
     queryFn: () => getAllReportsByUser(userId),
     retryDelay: 1000
   });
   
   const companiesQuery = useQuery({
-    queryKey: ['allCompanies'],
+    queryKey: ['allCompanies', userId],
     queryFn: () => getAllCompaniesByUser(userId),
     retryDelay: 1000
   });
-  
-  const [selectedKeys, setSelectedKeys] = useState([]);
   
   if (reportsQuery.isLoading) {
     return (
@@ -116,10 +111,15 @@ function RouteComponent() {
         <Table
             aria-label="reports table"
             selectionMode={'single'}
-            selectedKeys={selectedKeys}
+            selectedKeys={[]}
             onSelectionChange={() => {
-              setSelectedKeys([]);
-              onOpen()
+              navigate({
+                to: '/$userId/report-detail/$reportId',
+                params: {
+                  userId,
+                  reportId: 'b5cc17ab-4211-11f0-a9d1-aa8a5f2ad6c5',
+                },
+              });
             }}
         >
           <TableHeader columns={columns}>
@@ -133,10 +133,7 @@ function RouteComponent() {
             )}
           </TableBody>
         </Table>
-        <ReportDetail
-            isOpen={isOpen}
-            onOpenChange={onOpenChange}
-        />
+        <Outlet/>
       </>
   );
 }
