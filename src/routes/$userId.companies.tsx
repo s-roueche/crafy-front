@@ -15,12 +15,13 @@ import {useTranslation} from "react-i18next";
 import {useState} from "react";
 
 
-export const Route = createFileRoute('/companies')({
+export const Route = createFileRoute('/$userId/companies')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
-  const {t} = useTranslation()
+  const {t} = useTranslation();
+  const { userId } = Route.useParams();
   
   const columns = [
     {
@@ -31,7 +32,7 @@ function RouteComponent() {
   
   const { isLoading, isError, data, error } = useQuery({
     queryKey: ['allReports'],
-    queryFn: () => getAllCompaniesByUser('b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5'),
+    queryFn: () => getAllCompaniesByUser(userId),
     retryDelay: 1000
   });
   

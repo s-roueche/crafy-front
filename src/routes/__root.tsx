@@ -1,4 +1,4 @@
-import {Outlet, createRootRoute} from '@tanstack/react-router'
+import {Outlet, createRootRoute, useRouter} from '@tanstack/react-router'
 import {TanStackRouterDevtools} from "@tanstack/react-router-devtools";
 import {ReactQueryDevtools} from "@tanstack/react-query-devtools";
 import {Divider, Listbox, ListboxItem, ListboxSection} from "@heroui/react";
@@ -10,7 +10,8 @@ export const Route = createRootRoute({
 })
 
 function RootComponent() {
-  const {t} = useTranslation()
+  const {t} = useTranslation();
+  const router = useRouter();
   
   return (
     <>
@@ -28,10 +29,26 @@ function RootComponent() {
                         </ListboxItem>
                     </ListboxSection>
                     <ListboxSection>
-                        <ListboxItem key={"reports"} href={"/reports"}>
-                            <div className="text-lg">{t('reports')}</div>
+                        <ListboxItem
+                            key={"reports"}
+                            href={
+                              router.buildLocation({
+                                to: '/$userId/reports',
+                                params: { userId: 'b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5' },
+                              }).href
+                            }
+                        >
+                          <div className="text-lg">{t('reports')}</div>
                         </ListboxItem>
-                        <ListboxItem key={"companies"} href={"/companies"}>
+                        <ListboxItem
+                            key={"companies"}
+                            href={
+                              router.buildLocation({
+                                to: '/$userId/companies',
+                                params: { userId: 'b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5' },
+                              }).href
+                            }
+                        >
                             <div className="text-lg">{t('companies')}</div>
                         </ListboxItem>
                     </ListboxSection>

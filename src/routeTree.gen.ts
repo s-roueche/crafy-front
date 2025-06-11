@@ -11,27 +11,27 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as ReportsImport } from './routes/reports'
-import { Route as CompaniesImport } from './routes/companies'
 import { Route as IndexImport } from './routes/index'
+import { Route as UserIdReportsImport } from './routes/$userId.reports'
+import { Route as UserIdCompaniesImport } from './routes/$userId.companies'
 
 // Create/Update Routes
-
-const ReportsRoute = ReportsImport.update({
-  id: '/reports',
-  path: '/reports',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const CompaniesRoute = CompaniesImport.update({
-  id: '/companies',
-  path: '/companies',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const UserIdReportsRoute = UserIdReportsImport.update({
+  id: '/$userId/reports',
+  path: '/$userId/reports',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const UserIdCompaniesRoute = UserIdCompaniesImport.update({
+  id: '/$userId/companies',
+  path: '/$userId/companies',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,18 +46,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/companies': {
-      id: '/companies'
-      path: '/companies'
-      fullPath: '/companies'
-      preLoaderRoute: typeof CompaniesImport
+    '/$userId/companies': {
+      id: '/$userId/companies'
+      path: '/$userId/companies'
+      fullPath: '/$userId/companies'
+      preLoaderRoute: typeof UserIdCompaniesImport
       parentRoute: typeof rootRoute
     }
-    '/reports': {
-      id: '/reports'
-      path: '/reports'
-      fullPath: '/reports'
-      preLoaderRoute: typeof ReportsImport
+    '/$userId/reports': {
+      id: '/$userId/reports'
+      path: '/$userId/reports'
+      fullPath: '/$userId/reports'
+      preLoaderRoute: typeof UserIdReportsImport
       parentRoute: typeof rootRoute
     }
   }
@@ -67,42 +67,42 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/companies': typeof CompaniesRoute
-  '/reports': typeof ReportsRoute
+  '/$userId/companies': typeof UserIdCompaniesRoute
+  '/$userId/reports': typeof UserIdReportsRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/companies': typeof CompaniesRoute
-  '/reports': typeof ReportsRoute
+  '/$userId/companies': typeof UserIdCompaniesRoute
+  '/$userId/reports': typeof UserIdReportsRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/companies': typeof CompaniesRoute
-  '/reports': typeof ReportsRoute
+  '/$userId/companies': typeof UserIdCompaniesRoute
+  '/$userId/reports': typeof UserIdReportsRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/companies' | '/reports'
+  fullPaths: '/' | '/$userId/companies' | '/$userId/reports'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/companies' | '/reports'
-  id: '__root__' | '/' | '/companies' | '/reports'
+  to: '/' | '/$userId/companies' | '/$userId/reports'
+  id: '__root__' | '/' | '/$userId/companies' | '/$userId/reports'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CompaniesRoute: typeof CompaniesRoute
-  ReportsRoute: typeof ReportsRoute
+  UserIdCompaniesRoute: typeof UserIdCompaniesRoute
+  UserIdReportsRoute: typeof UserIdReportsRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CompaniesRoute: CompaniesRoute,
-  ReportsRoute: ReportsRoute,
+  UserIdCompaniesRoute: UserIdCompaniesRoute,
+  UserIdReportsRoute: UserIdReportsRoute,
 }
 
 export const routeTree = rootRoute
@@ -116,18 +116,18 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/companies",
-        "/reports"
+        "/$userId/companies",
+        "/$userId/reports"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/companies": {
-      "filePath": "companies.tsx"
+    "/$userId/companies": {
+      "filePath": "$userId.companies.tsx"
     },
-    "/reports": {
-      "filePath": "reports.tsx"
+    "/$userId/reports": {
+      "filePath": "$userId.reports.tsx"
     }
   }
 }

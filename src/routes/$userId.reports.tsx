@@ -18,13 +18,14 @@ import {useState} from "react";
 import formatDate from "../dateFormatting.tsx"
 
 
-export const Route = createFileRoute('/reports')({
+export const Route = createFileRoute('/$userId/reports')({
   component: RouteComponent,
 })
 
 function RouteComponent() {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  const {t} = useTranslation()
+  const {t} = useTranslation();
+  const { userId } = Route.useParams();
   
   const columns = [
     {
@@ -50,13 +51,13 @@ function RouteComponent() {
   
   const reportsQuery = useQuery({
     queryKey: ['allReports'],
-    queryFn: () => getAllReportsByUser('b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5'),
+    queryFn: () => getAllReportsByUser(userId),
     retryDelay: 1000
   });
   
   const companiesQuery = useQuery({
     queryKey: ['allCompanies'],
-    queryFn: () => getAllCompaniesByUser('b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5'),
+    queryFn: () => getAllCompaniesByUser(userId),
     retryDelay: 1000
   });
   
@@ -132,7 +133,10 @@ function RouteComponent() {
             )}
           </TableBody>
         </Table>
-        <ReportDetail isOpen={isOpen} onOpenChange={onOpenChange}/>
+        <ReportDetail
+            isOpen={isOpen}
+            onOpenChange={onOpenChange}
+        />
       </>
   );
 }
