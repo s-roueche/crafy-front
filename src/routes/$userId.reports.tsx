@@ -62,7 +62,7 @@ function RouteComponent() {
     return (
         <>
           <h1 className="text-2xl font-bold justify-self-center p-10">
-            {t('reports')}
+            {t('Reports')}
           </h1>
           <span>Loading...</span>
         </>
@@ -73,7 +73,7 @@ function RouteComponent() {
     return (
         <>
           <h1 className="text-2xl font-bold justify-self-center p-10">
-            {t('reports')}
+            {t('Reports')}
           </h1>
           <span>Error: {reportsQuery.error.message}</span>
         </>
@@ -84,7 +84,7 @@ function RouteComponent() {
     return (
         <>
           <h1 className="text-2xl font-bold justify-self-center p-10">
-            {t('reports')}
+            {t('Reports')}
           </h1>
           <span>Error: {companiesQuery.error.message}</span>
         </>
@@ -106,7 +106,7 @@ function RouteComponent() {
   return (
       <>
         <h1 className="text-2xl font-bold justify-self-center p-10">
-          {t('reports')}
+          {t('Reports')}
         </h1>
         <Table
             aria-label="reports table"

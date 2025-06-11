@@ -38,7 +38,7 @@ function RootComponent() {
                               }).href
                             }
                         >
-                          <div className="text-lg">{t('reports')}</div>
+                          <div className="text-lg">{t('Reports')}</div>
                         </ListboxItem>
                         <ListboxItem
                             key={"companies"}
@@ -49,7 +49,7 @@ function RootComponent() {
                               }).href
                             }
                         >
-                            <div className="text-lg">{t('companies')}</div>
+                            <div className="text-lg">{t('Companies')}</div>
                         </ListboxItem>
                     </ListboxSection>
                 </Listbox>

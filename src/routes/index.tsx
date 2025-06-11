@@ -12,7 +12,7 @@ function RouteComponent() {
   return (
       <>
         <h1 className="text-4xl font-bold justify-self-center">
-          {t('welcome')}
+          {t('WelcomeToCrafy')}
         </h1>
       </>
   )
