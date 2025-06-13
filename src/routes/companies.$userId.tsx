@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import {createFileRoute, Outlet} from '@tanstack/react-router'
 import {
   Table,
   TableHeader,
@@ -13,7 +13,6 @@ import { getAllCompaniesByUser } from "../queries/getQueries.tsx";
 import type {Company} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
 import { Spinner} from "@heroui/react";
-import AddCompany from "../components/AddCompany.tsx";
 
 export const Route = createFileRoute('/companies/$userId')({
   component: RouteComponent,
@@ -95,7 +94,7 @@ function RouteComponent() {
           </TableBody>
         </Table>
         
-        <AddCompany/>
+        <Outlet/>
       </>
   );
 }

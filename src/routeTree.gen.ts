@@ -16,6 +16,7 @@ import { Route as IndexImport } from './routes/index'
 import { Route as ReportsUserIdImport } from './routes/reports.$userId'
 import { Route as CompaniesUserIdImport } from './routes/companies.$userId'
 import { Route as ReportDetailUserIdReportIdImport } from './routes/report-detail.$userId.$reportId'
+import { Route as CompaniesUserIdAddImport } from './routes/companies.$userId.add'
 
 // Create/Update Routes
 
@@ -51,6 +52,12 @@ const ReportDetailUserIdReportIdRoute = ReportDetailUserIdReportIdImport.update(
   } as any,
 )
 
+const CompaniesUserIdAddRoute = CompaniesUserIdAddImport.update({
+  id: '/add',
+  path: '/add',
+  getParentRoute: () => CompaniesUserIdRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -83,6 +90,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReportsUserIdImport
       parentRoute: typeof rootRoute
     }
+    '/companies/$userId/add': {
+      id: '/companies/$userId/add'
+      path: '/add'
+      fullPath: '/companies/$userId/add'
+      preLoaderRoute: typeof CompaniesUserIdAddImport
+      parentRoute: typeof CompaniesUserIdImport
+    }
     '/report-detail/$userId/$reportId': {
       id: '/report-detail/$userId/$reportId'
       path: '/report-detail/$userId/$reportId'
@@ -95,19 +109,33 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface CompaniesUserIdRouteChildren {
+  CompaniesUserIdAddRoute: typeof CompaniesUserIdAddRoute
+}
+
+const CompaniesUserIdRouteChildren: CompaniesUserIdRouteChildren = {
+  CompaniesUserIdAddRoute: CompaniesUserIdAddRoute,
+}
+
+const CompaniesUserIdRouteWithChildren = CompaniesUserIdRoute._addFileChildren(
+  CompaniesUserIdRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/$userId': typeof UserIdRoute
-  '/companies/$userId': typeof CompaniesUserIdRoute
+  '/companies/$userId': typeof CompaniesUserIdRouteWithChildren
   '/reports/$userId': typeof ReportsUserIdRoute
+  '/companies/$userId/add': typeof CompaniesUserIdAddRoute
   '/report-detail/$userId/$reportId': typeof ReportDetailUserIdReportIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/$userId': typeof UserIdRoute
-  '/companies/$userId': typeof CompaniesUserIdRoute
+  '/companies/$userId': typeof CompaniesUserIdRouteWithChildren
   '/reports/$userId': typeof ReportsUserIdRoute
+  '/companies/$userId/add': typeof CompaniesUserIdAddRoute
   '/report-detail/$userId/$reportId': typeof ReportDetailUserIdReportIdRoute
 }
 
@@ -115,8 +143,9 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/$userId': typeof UserIdRoute
-  '/companies/$userId': typeof CompaniesUserIdRoute
+  '/companies/$userId': typeof CompaniesUserIdRouteWithChildren
   '/reports/$userId': typeof ReportsUserIdRoute
+  '/companies/$userId/add': typeof CompaniesUserIdAddRoute
   '/report-detail/$userId/$reportId': typeof ReportDetailUserIdReportIdRoute
 }
 
@@ -127,6 +156,7 @@ export interface FileRouteTypes {
     | '/$userId'
     | '/companies/$userId'
     | '/reports/$userId'
+    | '/companies/$userId/add'
     | '/report-detail/$userId/$reportId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -134,6 +164,7 @@ export interface FileRouteTypes {
     | '/$userId'
     | '/companies/$userId'
     | '/reports/$userId'
+    | '/companies/$userId/add'
     | '/report-detail/$userId/$reportId'
   id:
     | '__root__'
@@ -141,6 +172,7 @@ export interface FileRouteTypes {
     | '/$userId'
     | '/companies/$userId'
     | '/reports/$userId'
+    | '/companies/$userId/add'
     | '/report-detail/$userId/$reportId'
   fileRoutesById: FileRoutesById
 }
@@ -148,7 +180,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   UserIdRoute: typeof UserIdRoute
-  CompaniesUserIdRoute: typeof CompaniesUserIdRoute
+  CompaniesUserIdRoute: typeof CompaniesUserIdRouteWithChildren
   ReportsUserIdRoute: typeof ReportsUserIdRoute
   ReportDetailUserIdReportIdRoute: typeof ReportDetailUserIdReportIdRoute
 }
@@ -156,7 +188,7 @@ export interface RootRouteChildren {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   UserIdRoute: UserIdRoute,
-  CompaniesUserIdRoute: CompaniesUserIdRoute,
+  CompaniesUserIdRoute: CompaniesUserIdRouteWithChildren,
   ReportsUserIdRoute: ReportsUserIdRoute,
   ReportDetailUserIdReportIdRoute: ReportDetailUserIdReportIdRoute,
 }
@@ -185,10 +217,17 @@ export const routeTree = rootRoute
       "filePath": "$userId.tsx"
     },
     "/companies/$userId": {
-      "filePath": "companies.$userId.tsx"
+      "filePath": "companies.$userId.tsx",
+      "children": [
+        "/companies/$userId/add"
+      ]
     },
     "/reports/$userId": {
       "filePath": "reports.$userId.tsx"
+    },
+    "/companies/$userId/add": {
+      "filePath": "companies.$userId.add.tsx",
+      "parent": "/companies/$userId"
     },
     "/report-detail/$userId/$reportId": {
       "filePath": "report-detail.$userId.$reportId.tsx"
