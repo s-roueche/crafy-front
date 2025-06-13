@@ -1,5 +1,9 @@
 import type {TFunction} from "i18next";
 
-export default function formatDate(date: Date, t: TFunction): string {
-  return ` ${t(`month${date.getMonth() + 1}`)} ${date.getFullYear()}`
+export function formatDateMonthYear(date: Date, t: TFunction): string {
+  return `${t(`month${date.getMonth() + 1}`)} ${date.getFullYear()}`
+}
+
+export function formatDateDayMonthYear(date: Date, t: TFunction): string {
+  return `${date.getDay()} ${t(`month${date.getMonth() + 1}`)} ${date.getFullYear()}`
 }

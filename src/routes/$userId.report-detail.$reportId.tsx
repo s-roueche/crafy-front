@@ -1,10 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Divider } from "@heroui/react";
+import { Divider, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
 import {useTranslation} from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import {getReportById, getCompanyById, getTotalTimeByReport, getActivitiesByReport} from "../queries/getQueries.tsx";
 import {Spinner} from "@heroui/react";
-import formatDate from "../dateFormatting.tsx";
+import {formatDateMonthYear, formatDateDayMonthYear} from "../dateFormatting.tsx";
+import type {Activity} from "../queries/interfaces.tsx";
 
 export const Route = createFileRoute('/$userId/report-detail/$reportId')({
   component: RouteComponent,
@@ -62,11 +63,29 @@ function RouteComponent() {
     return <span>Error: {activitiesQuery.error.message}</span>
   }
   
+  type Row = {
+    key: string,
+    date: Date,
+    timeWorked: string,
+    comment: string
+  }
+  
+  const rows: Row[] = activitiesQuery.data.map((activity: Activity, index: number) => {
+    const timeWorkedString: string = activity.timeWorked === 'FULL_DAY' ? t('FullDay') : t('HalfDay');
+    
+    return ({
+      key: String(index),
+      date: new Date(activity.date),
+      timeWorked: timeWorkedString,
+      comment: activity.comment,
+    })
+  });
+  
   return (
       <div className={'flex gap-4'}>
         <div className={'w-2/5'}>
-          <div className={'text-2xl font-bold p-4'}>
-            {t('Report')} {t('of')} {formatDate(new Date(reportQuery.data.monthReport), t)}
+          <div className={'text-2xl font-bold p-5 text-center'}>
+            {t('Report')} {t('of')} {formatDateMonthYear(new Date(reportQuery.data.monthReport), t)}
           </div>
           
           <Divider/>
@@ -88,7 +107,29 @@ function RouteComponent() {
         
         <Divider orientation="vertical" className={'h-screen'} />
         
-        <div>  </div>
+        <div>
+          <div className={'text-2xl font-bold p-5 text-center'}>{t('Activities')}</div>
+          
+          <div>
+            <Table hideHeader fullWidth sortDescriptor={{column: 'activity', direction: 'ascending'}}>
+              <TableHeader>
+                <TableColumn key={'activity'}> ACTIVITY </TableColumn>
+              </TableHeader>
+              <TableBody items={rows}>
+                {(item) => (
+                    <TableRow key={item.key}>
+                      <TableCell>
+                        <div>{formatDateDayMonthYear(item.date, t)} : {item.timeWorked}</div>
+                        <div className={'pb-3 italic'}>{t('Comment')} : {item.comment}</div>
+                        <Divider/>
+                      </TableCell>
+                    </TableRow>
+                )}
+              </TableBody>
+            </Table>
+          </div>
+          
+        </div>
         
       </div>
   );

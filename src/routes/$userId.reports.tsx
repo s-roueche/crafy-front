@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import {getAllCompaniesByUser, getAllReportsByUser} from "../queries/getQueries.tsx";
 import type {Company, Report} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
-import formatDate from "../dateFormatting.tsx"
+import {formatDateMonthYear} from "../dateFormatting.tsx"
 import {Spinner} from "@heroui/react";
 
 
@@ -96,7 +96,7 @@ function RouteComponent() {
   
   const rows: Row[] = reportsQuery.data.map((report: Report, index: number) => {
     const client = companiesQuery.data.find((company: Company) => company.id === report.clientId);
-    const formattedDate = formatDate(new Date(report.monthReport), t);
+    const formattedDate = formatDateMonthYear(new Date(report.monthReport), t);
     
     return ({
         key: String(index),

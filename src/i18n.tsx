@@ -12,12 +12,15 @@ i18next
       resources: {
         en : {
           translation: {
+            Activities: 'Activities',
             Client: 'Client',
             CLIENT: 'CLIENT',
             Comment: 'Comment',
             COMMENT: 'COMMENT',
             Companies : 'Companies',
             day: 'day',
+            FullDay: 'Full Day',
+            HalfDay: 'Half Day',
             MONTH: 'MONTH',
             month1: 'January',
             month2: 'February',
@@ -41,12 +44,15 @@ i18next
         },
         fr : {
           translation: {
+            Activities: 'Activités',
             Client: 'Client',
             CLIENT: 'CLIENT',
             Comment: 'Commentaire',
             COMMENT: 'COMMENTAIRE',
             Companies : 'Entreprises',
             day: 'jour',
+            FullDay: 'Journée complète',
+            HalfDay: 'Demi-journée',
             MONTH: 'MOIS',
             month1: 'Janvier',
             month2: 'Février',
