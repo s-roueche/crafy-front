@@ -13,6 +13,7 @@ import {getAllCompaniesByUser, getAllReportsByUser} from "../queries/getQueries.
 import type {Company, Report} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
 import formatDate from "../dateFormatting.tsx"
+import {Spinner} from "@heroui/react";
 
 
 export const Route = createFileRoute('/$userId/reports')({
@@ -64,7 +65,9 @@ function RouteComponent() {
           <h1 className="text-2xl font-bold justify-self-center p-10">
             {t('Reports')}
           </h1>
-          <span>Loading...</span>
+          <div className="flex justify-center items-center">
+            <Spinner/>
+          </div>
         </>
   );
   }
@@ -93,11 +96,11 @@ function RouteComponent() {
   
   const rows: Row[] = reportsQuery.data.map((report: Report, index: number) => {
     const client = companiesQuery.data.find((company: Company) => company.id === report.clientId);
-    const formattedDate = formatDate(new Date(report.monthReport));
+    const formattedDate = formatDate(new Date(report.monthReport), t);
     
     return ({
         key: String(index),
-        month: `${t(formattedDate.month)} ${formattedDate.year}`,
+        month: formattedDate,
         client: client.businessName,
         comment: report.comment,
     })

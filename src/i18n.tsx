@@ -12,9 +12,12 @@ i18next
       resources: {
         en : {
           translation: {
+            Client: 'Client',
             CLIENT: 'CLIENT',
+            Comment: 'Comment',
             COMMENT: 'COMMENT',
             Companies : 'Companies',
+            day: 'day',
             MONTH: 'MONTH',
             month1: 'January',
             month2: 'February',
@@ -29,16 +32,21 @@ i18next
             month11: 'November',
             month12: 'December',
             NAME: 'NAME',
+            of: 'of',
             Report: 'Report',
             Reports: 'Reports',
+            TotalTime: 'Total time',
             WelcomeToCrafy: 'Welcome to Crafy !',
           }
         },
         fr : {
           translation: {
+            Client: 'Client',
             CLIENT: 'CLIENT',
+            Comment: 'Commentaire',
             COMMENT: 'COMMENTAIRE',
             Companies : 'Entreprises',
+            day: 'jour',
             MONTH: 'MOIS',
             month1: 'Janvier',
             month2: 'Février',
@@ -53,8 +61,10 @@ i18next
             month11: 'Novembre',
             month12: 'Décembre',
             NAME: 'NOM',
+            of: 'de',
             Report: 'Rapport',
             Reports: 'Rapports',
+            TotalTime: 'Temps total',
             WelcomeToCrafy: 'Bienvenue sur Crafy !',
           }
         }

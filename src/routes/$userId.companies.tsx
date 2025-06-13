@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllCompaniesByUser } from "../queries/getQueries.tsx";
 import type {Company} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
-import {useState} from "react";
+import {Spinner} from "@heroui/react";
 
 
 export const Route = createFileRoute('/$userId/companies')({
@@ -36,15 +36,15 @@ function RouteComponent() {
     retryDelay: 1000
   });
   
-  const [selectedKeys, setSelectedKeys] = useState([]);
-  
   if (isLoading) {
     return (
         <>
           <h1 className="text-2xl font-bold justify-self-center p-10">
             {t('Companies')}
           </h1>
-          <span>Loading...</span>
+          <div className="flex justify-center items-center">
+            <Spinner/>
+          </div>
         </>
     );
   }
@@ -81,10 +81,7 @@ function RouteComponent() {
         <Table
             aria-label="reports table"
             selectionMode={'single'}
-            selectedKeys={selectedKeys}
-            onSelectionChange={() => {
-              setSelectedKeys([]);
-            }}
+            selectedKeys={[]}
         >
           <TableHeader columns={columns}>
             {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
