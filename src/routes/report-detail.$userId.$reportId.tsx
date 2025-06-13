@@ -7,7 +7,7 @@ import {Spinner} from "@heroui/react";
 import {formatDateMonthYear, formatDateDayMonthYear} from "../dateFormatting.tsx";
 import type {Activity} from "../queries/interfaces.tsx";
 
-export const Route = createFileRoute('/$userId/report-detail/$reportId')({
+export const Route = createFileRoute('/report-detail/$userId/$reportId')({
   component: RouteComponent,
 })
 

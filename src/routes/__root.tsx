@@ -22,7 +22,12 @@ function RootComponent() {
                         <ListboxItem
                             startContent={<FaPenSquare/>}
                             key={"app_name"}
-                            href={'/'}
+                            href={
+                              router.buildLocation({
+                                to: '/$userId',
+                                params: { userId: 'b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5' },
+                              }).href
+                            }
                             variant={'light'}
                         >
                             <div className="text-lg">Crafy</div>
@@ -33,7 +38,7 @@ function RootComponent() {
                             key={"reports"}
                             href={
                               router.buildLocation({
-                                to: '/$userId/reports',
+                                to: '/reports/$userId',
                                 params: { userId: 'b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5' },
                               }).href
                             }
@@ -44,7 +49,7 @@ function RootComponent() {
                             key={"companies"}
                             href={
                               router.buildLocation({
-                                to: '/$userId/companies',
+                                to: '/companies/$userId',
                                 params: { userId: 'b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5' },
                               }).href
                             }

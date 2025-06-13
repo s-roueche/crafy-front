@@ -13,6 +13,7 @@ i18next
         en : {
           translation: {
             Activities: 'Activities',
+            Add: 'Add',
             Client: 'Client',
             CLIENT: 'CLIENT',
             Comment: 'Comment',
@@ -45,6 +46,7 @@ i18next
         fr : {
           translation: {
             Activities: 'Activités',
+            Add: 'Ajouter',
             Client: 'Client',
             CLIENT: 'CLIENT',
             Comment: 'Commentaire',

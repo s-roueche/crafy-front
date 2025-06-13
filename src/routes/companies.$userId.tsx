@@ -12,10 +12,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllCompaniesByUser } from "../queries/getQueries.tsx";
 import type {Company} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
-import {Spinner} from "@heroui/react";
+import { Spinner} from "@heroui/react";
+import AddCompany from "../components/AddCompany.tsx";
 
-
-export const Route = createFileRoute('/$userId/companies')({
+export const Route = createFileRoute('/companies/$userId')({
   component: RouteComponent,
 })
 
@@ -94,6 +94,8 @@ function RouteComponent() {
             )}
           </TableBody>
         </Table>
+        
+        <AddCompany/>
       </>
   );
 }

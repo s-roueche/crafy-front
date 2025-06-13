@@ -16,7 +16,7 @@ import {formatDateMonthYear} from "../dateFormatting.tsx"
 import {Spinner} from "@heroui/react";
 
 
-export const Route = createFileRoute('/$userId/reports')({
+export const Route = createFileRoute('/reports/$userId')({
   component: RouteComponent,
 })
 
@@ -117,7 +117,7 @@ function RouteComponent() {
             selectedKeys={[]}
             onSelectionChange={() => {
               navigate({
-                to: '/$userId/report-detail/$reportId',
+                to: '/report-detail/$userId/$reportId',
                 params: {
                   userId,
                   reportId: 'b5cc17ab-4211-11f0-a9d1-aa8a5f2ad6c5',
