@@ -1,6 +1,5 @@
 import {Button, Form, Input, Modal, ModalBody, ModalContent, ModalHeader} from "@heroui/react";
 import {useTranslation} from "react-i18next";
-import {useState} from "react";
 import {createCompany} from "../queries/postQueries";
 
 
@@ -11,7 +10,6 @@ export default function CompanyForm(props: {
   userId: string,
 }) {
   const {t} = useTranslation();
-  const [, setSubmitted] = useState<{ [key: string]: FormDataEntryValue } | null>(null);
   const {onOpenChange, onClose, isOpen, userId} = props;
   
   const onSubmit = async (
@@ -22,7 +20,6 @@ export default function CompanyForm(props: {
     
     const data = Object.fromEntries(new FormData(e.currentTarget));
     
-    setSubmitted(data);
     console.log(data)
     await createCompany(data.businessName as string, userId)
   };
