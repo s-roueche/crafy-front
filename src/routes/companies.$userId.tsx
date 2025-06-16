@@ -1,4 +1,4 @@
-import {createFileRoute, Outlet} from '@tanstack/react-router'
+import {createFileRoute} from '@tanstack/react-router'
 import {
   Table,
   TableHeader,
@@ -12,7 +12,9 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllCompaniesByUser } from "../queries/getQueries.tsx";
 import type {Company} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
-import { Spinner} from "@heroui/react";
+import {Button, Spinner, useDisclosure} from "@heroui/react";
+import {FiPlusCircle} from "icons-react/fi";
+import CompanyForm from "../components/CompanyForm.tsx";
 
 export const Route = createFileRoute('/companies/$userId')({
   component: RouteComponent,
@@ -21,6 +23,7 @@ export const Route = createFileRoute('/companies/$userId')({
 function RouteComponent() {
   const {t} = useTranslation();
   const { userId } = Route.useParams();
+  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
   
   const columns = [
     {
@@ -30,10 +33,20 @@ function RouteComponent() {
   ];
   
   const { isLoading, isError, data, error } = useQuery({
-    queryKey: ['allReports'],
+    queryKey: ['allCompanies', userId],
     queryFn: () => getAllCompaniesByUser(userId),
     retryDelay: 1000
   });
+  
+  type Row = {
+    key: string,
+    name: string,
+  }
+  
+  const rows: Row[] = data.map((company: Company, index: number) => ({
+    key: String(index),
+    name: company.businessName,
+  }));
   
   if (isLoading) {
     return (
@@ -59,19 +72,6 @@ function RouteComponent() {
     );
   }
   
-  type Row = {
-    key: string,
-    name: string,
-  }
-  
-  const rows: Row[] = data.map((company: Company, index: number) => {
-    
-    return ({
-      key: String(index),
-      name: company.businessName,
-    })
-  });
-  
   return (
       <>
         <h1 className="text-2xl font-bold justify-self-center p-10">
@@ -93,8 +93,10 @@ function RouteComponent() {
             )}
           </TableBody>
         </Table>
-        
-        <Outlet/>
+        <Button onPress={() => onOpen()} className={'p-5 mt-10'} startContent={<FiPlusCircle/>}>
+          {t('Add')}
+        </Button>
+        <CompanyForm isOpen={isOpen} onClose={onClose} onOpenChange={onOpenChange} userId={userId} />
       </>
   );
 }

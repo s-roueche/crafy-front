@@ -1,20 +1,20 @@
-import { createFileRoute } from '@tanstack/react-router'
-import {Button, Form, Input, Modal, ModalBody, ModalContent, ModalHeader, useDisclosure} from "@heroui/react";
+import {Button, Form, Input, Modal, ModalBody, ModalContent, ModalHeader} from "@heroui/react";
 import {useTranslation} from "react-i18next";
 import {useState} from "react";
-// import {createCompany} from "../queries/postQueries.tsx";
-import {FiPlusCircle} from "icons-react/fi";
+import {createCompany} from "../queries/postQueries";
 
-export const Route = createFileRoute('/companies/$userId/add')({
-  component: RouteComponent,
-})
 
-function RouteComponent() {
-  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
+export default function CompanyForm(props: {
+  isOpen: boolean,
+  onOpenChange: () => void,
+  onClose: () => void,
+  userId: string,
+}) {
   const {t} = useTranslation();
   const [, setSubmitted] = useState<{ [key: string]: FormDataEntryValue } | null>(null);
+  const {onOpenChange, onClose, isOpen, userId} = props;
   
-  const onSubmit = (
+  const onSubmit = async (
       e: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined; }
   ) => {
     onClose()
@@ -23,12 +23,12 @@ function RouteComponent() {
     const data = Object.fromEntries(new FormData(e.currentTarget));
     
     setSubmitted(data);
-    // createCompany(data.businessName, )
+    console.log(data)
+    await createCompany(data.businessName as string, userId)
   };
   
   return (
       <>
-        <Button onPress={onOpen} className={'p-5 mt-10'} startContent={<FiPlusCircle/>}>{t('Add')}</Button>
         <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
           <ModalContent>
             {() => (
