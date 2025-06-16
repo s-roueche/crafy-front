@@ -20,7 +20,6 @@ export default function CompanyForm(props: {
     
     const data = Object.fromEntries(new FormData(e.currentTarget));
     
-    console.log(data)
     await createCompany(data.businessName as string, userId)
   };
   

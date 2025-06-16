@@ -43,10 +43,16 @@ function RouteComponent() {
     name: string,
   }
   
-  const rows: Row[] = data.map((company: Company, index: number) => ({
-    key: String(index),
-    name: company.businessName,
-  }));
+  let rows: Row[]
+  
+  if (data) {
+    rows = data.map((company: Company, index: number) => ({
+      key: String(index),
+      name: company.businessName,
+    }));
+  } else {
+    rows = [];
+  }
   
   if (isLoading) {
     return (

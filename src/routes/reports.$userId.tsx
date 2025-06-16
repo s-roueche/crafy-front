@@ -1,4 +1,4 @@
-import {createFileRoute, Outlet, useNavigate} from '@tanstack/react-router'
+import {createFileRoute, useNavigate} from '@tanstack/react-router'
 import {
   Table,
   TableHeader,
@@ -13,7 +13,9 @@ import {getAllCompaniesByUser, getAllReportsByUser} from "../queries/getQueries.
 import type {Company, Report} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
 import {formatDateMonthYear} from "../dateFormatting.tsx"
-import {Spinner} from "@heroui/react";
+import {Button, Spinner, useDisclosure} from "@heroui/react";
+import ReportForm from "../components/ReportForm.tsx";
+import {FiPlusCircle} from "icons-react/fi";
 
 
 export const Route = createFileRoute('/reports/$userId')({
@@ -24,6 +26,7 @@ function RouteComponent() {
   const {t} = useTranslation();
   const { userId } = Route.useParams();
   const navigate = useNavigate();
+  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
   
   const columns = [
     {
@@ -136,7 +139,10 @@ function RouteComponent() {
             )}
           </TableBody>
         </Table>
-        <Outlet/>
+        <Button onPress={() => onOpen()} className={'p-5 mt-10'} startContent={<FiPlusCircle/>}>
+          {t('Add')}
+        </Button>
+        <ReportForm isOpen={isOpen} onClose={onClose} onOpenChange={onOpenChange} userId={userId} />
       </>
   );
 }
