@@ -14,6 +14,7 @@ i18next
           translation: {
             Activities: 'Activities',
             Add: 'Add',
+            AddActivity: 'Add an activity',
             AddCompany: 'Add a company',
             AddReport: 'Add a report',
             Client: 'Client',
@@ -21,6 +22,7 @@ i18next
             Comment: 'Comment',
             COMMENT: 'COMMENT',
             Companies : 'Companies',
+            Date: 'Date',
             day: 'day',
             EnterComment: 'Enter a comment',
             EnterMonthReport: 'Enter the month of the report',
@@ -47,6 +49,8 @@ i18next
             Report: 'Report',
             Reports: 'Reports',
             SelectClient: 'Select the client',
+            SelectTimeWorked: 'Select the time worked',
+            TimeWorked: 'Time Worked',
             TotalTime: 'Total time',
             WelcomeToCrafy: 'Welcome to Crafy !',
           }
@@ -55,6 +59,7 @@ i18next
           translation: {
             Activities: 'Activités',
             Add: 'Ajouter',
+            AddActivity: 'Ajouter une activité',
             AddCompany: 'Ajouter une entreprise',
             AddReport: 'Ajouter un rapport',
             Client: 'Client',
@@ -62,6 +67,7 @@ i18next
             Comment: 'Commentaire',
             COMMENT: 'COMMENTAIRE',
             Companies : 'Entreprises',
+            Date: 'Date',
             day: 'jour',
             EnterComment: 'Entrez un commentaire',
             EnterMonthReport: 'Entrez le mois du rapport',
@@ -88,6 +94,8 @@ i18next
             Report: 'Rapport',
             Reports: 'Rapports',
             SelectClient: 'Sélectionnez le client',
+            SelectTimeWorked: 'Sélectionnez le temps travaillé',
+            TimeWorked: 'Temps travaillé',
             TotalTime: 'Temps total',
             WelcomeToCrafy: 'Bienvenue sur Crafy !',
           }

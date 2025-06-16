@@ -1,11 +1,23 @@
 import { createFileRoute } from '@tanstack/react-router'
-import { Divider, Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@heroui/react";
+import {
+  Divider,
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
+  Button,
+  useDisclosure
+} from "@heroui/react";
 import {useTranslation} from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import {getReportById, getCompanyById, getTotalTimeByReport, getActivitiesByReport} from "../queries/getQueries.tsx";
 import {Spinner} from "@heroui/react";
 import {formatDateMonthYear, formatDateDayMonthYear} from "../dateFormatting.tsx";
 import type {Activity} from "../queries/interfaces.tsx";
+import {FiPlusCircle} from "icons-react/fi";
+import ActivityForm from "../components/ActivityForm.tsx";
 
 export const Route = createFileRoute('/report-detail/$userId/$reportId')({
   component: RouteComponent,
@@ -13,6 +25,7 @@ export const Route = createFileRoute('/report-detail/$userId/$reportId')({
 
 function RouteComponent() {
   const { t } = useTranslation();
+  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
   const { reportId } = Route.useParams();
   
   const reportQuery = useQuery({
@@ -127,6 +140,11 @@ function RouteComponent() {
                 )}
               </TableBody>
             </Table>
+            
+            <Button onPress={() => onOpen()} className={'p-5 mt-10'} startContent={<FiPlusCircle/>}>
+              {t('Add')}
+            </Button>
+            <ActivityForm isOpen={isOpen} onClose={onClose} onOpenChange={onOpenChange} reportId={reportId}/>
           </div>
           
         </div>

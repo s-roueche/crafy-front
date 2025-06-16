@@ -32,4 +32,4 @@ export type Activity = {
     comment?: string | null;
 }
 
-type TimeWorked = 'FULL_DAY' | 'HALF_DAY';
+export type TimeWorked = 'FULL_DAY' | 'HALF_DAY';

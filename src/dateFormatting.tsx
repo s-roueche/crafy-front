@@ -5,5 +5,5 @@ export function formatDateMonthYear(date: Date, t: TFunction): string {
 }
 
 export function formatDateDayMonthYear(date: Date, t: TFunction): string {
-  return `${date.getDay()} ${t(`month${date.getMonth() + 1}`)} ${date.getFullYear()}`
+  return `${date.getDate()} ${t(`month${date.getMonth() + 1}`)} ${date.getFullYear()}`
 }
