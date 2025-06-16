@@ -13,7 +13,7 @@ import {getAllCompaniesByUser, getAllReportsByUser} from "../queries/getQueries.
 import type {Company, Report} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
 import {formatDateMonthYear} from "../dateFormatting.tsx"
-import {Button, Spinner, useDisclosure} from "@heroui/react";
+import {Button, type Selection, Spinner, useDisclosure} from "@heroui/react";
 import ReportForm from "../components/ReportForm.tsx";
 import {FiPlusCircle} from "icons-react/fi";
 
@@ -97,17 +97,28 @@ function RouteComponent() {
     );
   }
   
-  const rows: Row[] = reportsQuery.data.map((report: Report, index: number) => {
+  const rows: Row[] = reportsQuery.data.map((report: Report) => {
     const client = companiesQuery.data.find((company: Company) => company.id === report.clientId);
     const formattedDate = formatDateMonthYear(new Date(report.monthReport), t);
     
     return ({
-        key: String(index),
-        month: formattedDate,
-        client: client.businessName,
-        comment: report.comment,
+      key: report.id,
+      month: formattedDate,
+      client: client.businessName,
+      comment: report.comment,
     })
   });
+  
+  function goToDetail (selection: Selection) {
+    const reportId = Array.from(selection)[0];
+    navigate({
+      to: '/report-detail/$userId/$reportId',
+      params: {
+        userId,
+        reportId: reportId,
+      },
+    });
+  }
   
   return (
       <>
@@ -118,15 +129,7 @@ function RouteComponent() {
             aria-label="reports table"
             selectionMode={'single'}
             selectedKeys={[]}
-            onSelectionChange={() => {
-              navigate({
-                to: '/report-detail/$userId/$reportId',
-                params: {
-                  userId,
-                  reportId: 'b5cc17ab-4211-11f0-a9d1-aa8a5f2ad6c5',
-                },
-              });
-            }}
+            onSelectionChange={goToDetail}
         >
           <TableHeader columns={columns}>
             {(column) => <TableColumn key={column.key}>{column.label}</TableColumn>}
