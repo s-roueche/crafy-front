@@ -14,8 +14,7 @@ import {useTranslation} from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import {getReportById, getCompanyById, getTotalTimeByReport, getActivitiesByReport} from "../queries/getQueries.tsx";
 import {Spinner} from "@heroui/react";
-import {formatDateMonthYear, formatDateDayMonthYear} from "../dateFormatting.tsx";
-import type {Activity} from "../queries/interfaces.tsx";
+import {formatDateMonthYear, formatDateDayOfTheWeek, getNumberOfDaysInMonth} from "../dateHandling.tsx";
 import {FiPlusCircle} from "icons-react/fi";
 import ActivityForm from "../components/ActivityForm.tsx";
 
@@ -83,16 +82,30 @@ function RouteComponent() {
     comment: string
   }
   
-  const rows: Row[] = activitiesQuery.data.map((activity: Activity, index: number) => {
-    const timeWorkedString: string = activity.timeWorked === 'FULL_DAY' ? t('FullDay') : t('HalfDay');
-    
-    return ({
-      key: String(index),
-      date: new Date(activity.date),
-      timeWorked: timeWorkedString,
-      comment: activity.comment,
+  const rows: Row[] = [];
+  
+  for (let day = 1 ; day <= getNumberOfDaysInMonth(new Date(reportQuery.data.monthReport)); day++) {
+    rows.push({
+      key: String(day - 1),
+      date: new Date(new Date(reportQuery.data.monthReport).setUTCDate(day)),
+      timeWorked: '+',
+      comment: '',
     })
-  });
+  }
+  
+  for (const activity  of activitiesQuery.data) {
+    const row = rows[new Date(activity.date).getDate() - 1];
+    let timeWorkedDisplay;
+    
+    if (activity.timeWorked === 'FULL_DAY') {
+      timeWorkedDisplay = '1j.';
+    } else {
+      timeWorkedDisplay = '1/2j.'
+    }
+    
+    row.timeWorked = timeWorkedDisplay;
+    row.comment = activity.comment;
+  }
   
   return (
       <div className={'flex gap-4'}>
@@ -124,17 +137,23 @@ function RouteComponent() {
           <div className={'text-2xl font-bold p-5 text-center'}>{t('Activities')}</div>
           
           <div>
-            <Table hideHeader fullWidth sortDescriptor={{column: 'activity', direction: 'ascending'}}>
+            <Table isVirtualized isStriped fullWidth sortDescriptor={{column: 'activity', direction: 'ascending'}}>
               <TableHeader>
-                <TableColumn key={'activity'}> ACTIVITY </TableColumn>
+                <TableColumn key={'date'} className={'text-medium'}> {t('Date')} </TableColumn>
+                <TableColumn key={'timeWorked'} className={'text-medium'}> {t('TimeWorked')} </TableColumn>
+                <TableColumn key={'comment'} className={'text-medium'}> {t('Comment ')} </TableColumn>
               </TableHeader>
               <TableBody items={rows}>
                 {(item) => (
                     <TableRow key={item.key}>
+                        <TableCell>
+                          <div className={'text-medium'}>{formatDateDayOfTheWeek(item.date, t)}</div>
+                        </TableCell>
                       <TableCell>
-                        <div>{formatDateDayMonthYear(item.date, t)} : {item.timeWorked}</div>
-                        <div className={'pb-3 italic'}>{t('Comment')} : {item.comment}</div>
-                        <Divider/>
+                        <Button isIconOnly variant={'flat'}>{item.timeWorked}</Button>
+                      </TableCell>
+                      <TableCell>
+                        <div className={'italic'}>{item.comment}</div>
                       </TableCell>
                     </TableRow>
                 )}
