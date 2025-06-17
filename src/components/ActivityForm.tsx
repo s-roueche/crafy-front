@@ -7,12 +7,13 @@ import {
   ModalContent,
   ModalHeader,
   Select,
-  SelectItem,
+  SelectItem, Spinner,
 } from "@heroui/react";
 import {useTranslation} from "react-i18next";
 import {useState} from "react";
 import {createActivity} from "../queries/postQueries";
 import type {TimeWorked} from "../queries/interfaces.tsx";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 
 
 export default function ReportForm(props: {
@@ -24,6 +25,25 @@ export default function ReportForm(props: {
   const {t} = useTranslation();
   const {onOpenChange, onClose, isOpen, reportId} = props;
   const [timeWorked, setTimeWorked] = useState<string>();
+  const queryClient = useQueryClient();
+  
+  const activityMutation = useMutation({
+    mutationKey: ['add-company', reportId],
+    mutationFn: async (data: {
+      date: Date,
+      reportId: string,
+      timeWorked: TimeWorked,
+      comment: string,
+    }) => {await createActivity(
+        data.date,
+        data.reportId,
+        data.timeWorked,
+        data.comment,
+    );},
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['activities', reportId] });
+    },
+  })
   
   const onSubmit = async (
       e: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined; }
@@ -33,10 +53,28 @@ export default function ReportForm(props: {
     
     const data = Object.fromEntries(new FormData(e.currentTarget));
     
-    await createActivity(new Date(data.date as string), reportId, timeWorked as TimeWorked, data.comment as string)
+    activityMutation.mutate({
+      date: new Date(data.date as string),
+      reportId,
+      timeWorked: timeWorked as TimeWorked,
+      comment: data.comment as string
+    })
     
     console.log(data)
   };
+  
+  if (activityMutation.isPending){
+    return(
+        <div className="flex justify-center items-center">
+          <Spinner/>
+        </div>
+    );
+  }
+  
+  
+  if (activityMutation.isError){
+    return <span>Error: {activityMutation.error.message}</span>
+  }
   
   return (
       <>

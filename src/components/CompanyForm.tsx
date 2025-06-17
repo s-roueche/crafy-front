@@ -1,6 +1,7 @@
-import {Button, Form, Input, Modal, ModalBody, ModalContent, ModalHeader} from "@heroui/react";
+import {Button, Form, Input, Modal, ModalBody, ModalContent, ModalHeader, Spinner} from "@heroui/react";
 import {useTranslation} from "react-i18next";
 import {createCompany} from "../queries/postQueries";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 
 
 export default function CompanyForm(props: {
@@ -11,6 +12,18 @@ export default function CompanyForm(props: {
 }) {
   const {t} = useTranslation();
   const {onOpenChange, onClose, isOpen, userId} = props;
+  const queryClient = useQueryClient();
+  
+  const companyMutation = useMutation({
+    mutationKey: ['add-company', userId],
+    mutationFn: async (data: {
+      businessName: string,
+      userId: string,
+    }) => {await createCompany(data.businessName, data.userId);},
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allCompanies', userId] });
+    },
+  })
   
   const onSubmit = async (
       e: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined; }
@@ -20,8 +33,24 @@ export default function CompanyForm(props: {
     
     const data = Object.fromEntries(new FormData(e.currentTarget));
     
-    await createCompany(data.businessName as string, userId)
+    companyMutation.mutate({
+      businessName: data.businessName as string,
+      userId
+    })
   };
+  
+  if (companyMutation.isPending){
+    return(
+        <div className="flex justify-center items-center">
+          <Spinner/>
+        </div>
+    );
+  }
+  
+  
+  if (companyMutation.isError){
+    return <span>Error: {companyMutation.error.message}</span>
+  }
   
   return (
       <>
