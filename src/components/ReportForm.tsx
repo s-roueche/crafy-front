@@ -12,7 +12,7 @@ import {
 } from "@heroui/react";
 import {useTranslation} from "react-i18next";
 import {useState} from "react";
-import {useQuery} from "@tanstack/react-query";
+import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import {getAllCompaniesByUser} from "../queries/getQueries";
 import type {Company} from "../queries/interfaces.tsx";
 import {createReport} from "../queries/postQueries";
@@ -27,14 +27,28 @@ export default function ReportForm(props: {
   const {t} = useTranslation();
   const [client, setClient] = useState<string>()
   const {onOpenChange, onClose, isOpen, userId} = props;
+  const queryClient = useQueryClient();
   
-  const {data: companies, isLoading, isError, error} = useQuery({
+  const companiesQuery = useQuery({
     queryKey: ['clients', userId],
     queryFn: () => getAllCompaniesByUser(userId),
     retryDelay: 1000,
   })
   
-  if (isLoading){
+  const reportMutation = useMutation({
+    mutationKey: ['add-report', userId],
+    mutationFn: async (data: {
+      clientId: string,
+      userId: string,
+      month: Date,
+      comment: string
+    }) => {await createReport(data.clientId, data.userId, data.month, data.comment)},
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['allReports', userId] });
+    },
+  })
+  
+  if (companiesQuery.isLoading || reportMutation.isPending){
     return(
         <div className="flex justify-center items-center">
           <Spinner/>
@@ -42,8 +56,12 @@ export default function ReportForm(props: {
     );
   }
   
-  if (isError){
-    return <span>Error: {error.message}</span>
+  if (companiesQuery.isError){
+    return <span>Error: {companiesQuery.error.message}</span>
+  }
+  
+  if (reportMutation.isError){
+    return <span>Error: {reportMutation.error.message}</span>
   }
   
   type Item = {
@@ -51,7 +69,7 @@ export default function ReportForm(props: {
     label: string;
   }
   
-  const clients: Item[] = companies.map((client: Company) => {
+  const clients: Item[] = companiesQuery.data.map((client: Company) => {
     return {
       key: client.id,
       label: client.businessName,
@@ -67,7 +85,12 @@ export default function ReportForm(props: {
     
     const data = Object.fromEntries(new FormData(e.currentTarget));
     
-    await createReport(client, userId, new Date(data.month as string), data.comment as string)
+    reportMutation.mutate({
+      clientId: client,
+      userId,
+      month: new Date(data.month as string),
+      comment: data.comment as string
+    })
     
     console.log(data)
     console.log(client)
