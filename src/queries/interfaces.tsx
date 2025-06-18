@@ -33,3 +33,5 @@ export type Activity = {
 }
 
 export type TimeWorked = 'FULL_DAY' | 'HALF_DAY';
+
+export type NullabbleTimeWorked = 'FULL_DAY' | 'HALF_DAY' | 'NONE';

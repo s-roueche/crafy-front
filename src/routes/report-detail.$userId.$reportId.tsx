@@ -10,48 +10,133 @@ import {
   Button,
   useDisclosure
 } from "@heroui/react";
-import {useTranslation} from "react-i18next";
-import { useQuery } from "@tanstack/react-query";
-import {getReportById, getCompanyById, getTotalTimeByReport, getActivitiesByReport} from "../queries/getQueries.tsx";
-import {Spinner} from "@heroui/react";
-import {formatDateMonthYear, formatDateDayOfTheWeek, getNumberOfDaysInMonth} from "../dateHandling.tsx";
-import {FiPlusCircle} from "icons-react/fi";
+import { useTranslation } from "react-i18next";
+import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
+import { getReportById, getCompanyById, getTotalTimeByReport, getActivitiesByReport} from "../queries/getQueries.tsx";
+import { Spinner } from "@heroui/react";
+import { formatDateMonthYear, formatDateDayOfTheWeek, getNumberOfDaysInMonth } from "../dateHandling.tsx";
+import { FiPlusCircle } from "icons-react/fi";
 import ActivityForm from "../components/ActivityForm.tsx";
+import type {TimeWorked, NullabbleTimeWorked} from "../queries/interfaces.tsx";
+import { updateActivityTimeWorked } from "../queries/putQueries.tsx";
+import { createActivity } from "../queries/postQueries.tsx";
+import { deleteActivity } from "../queries/deleteQueries.tsx";
+
 
 export const Route = createFileRoute('/report-detail/$userId/$reportId')({
   component: RouteComponent,
 })
 
+type Item = {
+  key: string,
+  id: string,
+  date: Date,
+  timeWorked: NullabbleTimeWorked,
+  timeWorkedDisplay: string,
+  comment: string
+}
+
 function RouteComponent() {
   const { t } = useTranslation();
   const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
   const { reportId } = Route.useParams();
+  const queryClient = useQueryClient();
   
   const reportQuery = useQuery({
     queryKey: ['report', reportId],
     queryFn: () => getReportById(reportId),
     retryDelay: 1000,
-  })
+  });
   
   const companyQuery = useQuery({
     queryKey: ['company', reportId],
     queryFn: () => getCompanyById(reportQuery.data.clientId),
     retryDelay: 1000,
-  })
+  });
   
   const totalTimeQuery = useQuery({
     queryKey: ['totalTime', reportId],
     queryFn: () => getTotalTimeByReport(reportQuery.data.id),
     retryDelay: 1000,
-  })
+  });
   
   const activitiesQuery = useQuery({
     queryKey: ['activities', reportId],
     queryFn: () => getActivitiesByReport(reportQuery.data.id),
     retryDelay: 1000,
+  });
+  
+  const activityTimeWorkedMutation = useMutation({
+    mutationKey: ['activityTimeWorked', reportId],
+    mutationFn: async (data: {
+      id: string;
+      timeWorked: TimeWorked;
+    }) => {await updateActivityTimeWorked(
+        data.id,
+        data.timeWorked,
+    )},
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['activities', reportId] });
+    },
   })
   
-  if (reportQuery.isLoading || companyQuery.isLoading || totalTimeQuery.isLoading || activitiesQuery.isLoading) {
+  const newActivityMutation = useMutation({
+    mutationKey: ['add-activity', reportId],
+    mutationFn: async (data: {
+      timeWorked: TimeWorked;
+      date: Date,
+    }) => {await createActivity(
+        data.date,
+        reportId,
+        data.timeWorked,
+        ''
+    )},
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['activities', reportId] });
+    },
+  })
+  
+  const deleteActivityMutation = useMutation({
+    mutationKey: ['delete-activity', reportId],
+    mutationFn: async (data: {
+      id: string;
+    }) => {await deleteActivity(data.id)},
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['activities', reportId] });
+    },
+  })
+  
+  function changeTimeWorked(item: Item) {
+    switch (item.timeWorked) {
+      case `NONE`:
+        newActivityMutation.mutate({
+          date: item.date,
+          timeWorked: 'FULL_DAY'
+        })
+        break;
+      case 'FULL_DAY':
+        activityTimeWorkedMutation.mutate({
+          id: item.id,
+          timeWorked: 'HALF_DAY',
+        });
+        break;
+      case 'HALF_DAY':
+        deleteActivityMutation.mutate({ id: item.id })
+        break;
+      default:
+        throw new Error(`Invalid time worked ${item.timeWorked}`);
+    }
+  }
+  
+  if (
+      reportQuery.isLoading
+      || companyQuery.isLoading
+      || totalTimeQuery.isLoading
+      || activitiesQuery.isLoading
+      || activityTimeWorkedMutation.isPending
+      || newActivityMutation.isPending
+      || deleteActivityMutation.isPending
+  ) {
     return (
         <div className="flex justify-center items-center">
           <Spinner/>
@@ -74,37 +159,46 @@ function RouteComponent() {
   if (activitiesQuery.isError) {
     return <span>Error: {activitiesQuery.error.message}</span>
   }
-  
-  type Row = {
-    key: string,
-    date: Date,
-    timeWorked: string,
-    comment: string
+ 
+  if (activityTimeWorkedMutation.isError) {
+    return <span>Error: {activityTimeWorkedMutation.error.message}</span>
   }
   
-  const rows: Row[] = [];
+  if (newActivityMutation.isError) {
+    return <span>Error: {newActivityMutation.error.message}</span>
+  }
+  
+  if (deleteActivityMutation.isError) {
+    return <span>Error: {deleteActivityMutation.error.message}</span>
+  }
+  
+  const rows: Item[] = [];
   
   for (let day = 1 ; day <= getNumberOfDaysInMonth(new Date(reportQuery.data.monthReport)); day++) {
     rows.push({
       key: String(day - 1),
+      id: '',
       date: new Date(new Date(reportQuery.data.monthReport).setUTCDate(day)),
-      timeWorked: '+',
+      timeWorked: 'NONE',
+      timeWorkedDisplay: '+',
       comment: '',
     })
   }
   
   for (const activity  of activitiesQuery.data) {
-    const row = rows[new Date(activity.date).getDate() - 1];
+    const item = rows[new Date(activity.date).getDate() - 1];
     let timeWorkedDisplay;
     
     if (activity.timeWorked === 'FULL_DAY') {
-      timeWorkedDisplay = '1j.';
+      timeWorkedDisplay = `1${t('d')}`;
     } else {
-      timeWorkedDisplay = '1/2j.'
+      timeWorkedDisplay = `1/2${t('d')}`;
     }
     
-    row.timeWorked = timeWorkedDisplay;
-    row.comment = activity.comment;
+    item.id = activity.id;
+    item.timeWorkedDisplay = timeWorkedDisplay;
+    item.timeWorked = activity.timeWorked;
+    item.comment = activity.comment;
   }
   
   return (
@@ -150,7 +244,11 @@ function RouteComponent() {
                           <div className={'text-medium'}>{formatDateDayOfTheWeek(item.date, t)}</div>
                         </TableCell>
                       <TableCell>
-                        <Button isIconOnly variant={'flat'}>{item.timeWorked}</Button>
+                        <Button
+                            isIconOnly
+                            variant={'flat'}
+                            onPress={() => { changeTimeWorked(item) }}
+                        >{item.timeWorkedDisplay}</Button>
                       </TableCell>
                       <TableCell>
                         <div className={'italic'}>{item.comment}</div>
