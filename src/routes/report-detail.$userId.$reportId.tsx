@@ -243,10 +243,9 @@ function RouteComponent() {
                         <TableCell>
                           <div className={'text-medium'}>{formatDateDayOfTheWeek(item.date, t)}</div>
                         </TableCell>
-                      <TableCell>
+                      <TableCell className={'flex justify-center'}>
                         <Button
                             isIconOnly
-                            variant={'flat'}
                             onPress={() => { changeTimeWorked(item) }}
                         >{item.timeWorkedDisplay}</Button>
                       </TableCell>
