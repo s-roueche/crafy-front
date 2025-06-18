@@ -14,13 +14,14 @@ import { useTranslation } from "react-i18next";
 import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
 import { getReportById, getCompanyById, getTotalTimeByReport, getActivitiesByReport} from "../queries/getQueries.tsx";
 import { Spinner } from "@heroui/react";
-import { formatDateMonthYear, formatDateDayOfTheWeek, getNumberOfDaysInMonth } from "../dateHandling.tsx";
+import { formatDateMonthYear, formatDateDayOfTheWeek, getNumberOfDaysInMonth } from "../utils/dateHandling.tsx";
 import { FiPlusCircle } from "icons-react/fi";
 import ActivityForm from "../components/ActivityForm.tsx";
 import type {TimeWorked, NullabbleTimeWorked} from "../queries/interfaces.tsx";
 import { updateActivityTimeWorked } from "../queries/putQueries.tsx";
 import { createActivity } from "../queries/postQueries.tsx";
 import { deleteActivity } from "../queries/deleteQueries.tsx";
+import commentRendering from "../utils/commentRendering.tsx";
 
 
 export const Route = createFileRoute('/report-detail/$userId/$reportId')({
@@ -235,7 +236,7 @@ function RouteComponent() {
               <TableHeader>
                 <TableColumn key={'date'} className={'text-medium'}> {t('Date')} </TableColumn>
                 <TableColumn key={'timeWorked'} className={'text-medium'}> {t('TimeWorked')} </TableColumn>
-                <TableColumn key={'comment'} className={'text-medium'}> {t('Comment ')} </TableColumn>
+                <TableColumn key={'comment'} className={'text-medium'}> {t('Comment')} </TableColumn>
               </TableHeader>
               <TableBody items={rows}>
                 {(item) => (
@@ -249,8 +250,8 @@ function RouteComponent() {
                             onPress={() => { changeTimeWorked(item) }}
                         >{item.timeWorkedDisplay}</Button>
                       </TableCell>
-                      <TableCell>
-                        <div className={'italic'}>{item.comment}</div>
+                      <TableCell className={'justify-items-end'}>
+                        <div className={'italic'}>{commentRendering(item.timeWorked, item.comment)}</div>
                       </TableCell>
                     </TableRow>
                 )}

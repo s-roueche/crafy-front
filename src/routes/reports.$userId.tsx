@@ -12,7 +12,7 @@ import { useQuery } from "@tanstack/react-query";
 import {getAllCompaniesByUser, getAllReportsByUser} from "../queries/getQueries.tsx";
 import type {Company, Report} from "../queries/interfaces.tsx";
 import {useTranslation} from "react-i18next";
-import {formatDateMonthYear} from "../dateHandling.tsx"
+import {formatDateMonthYear} from "../utils/dateHandling.tsx"
 import {Button, type Selection, Spinner, useDisclosure} from "@heroui/react";
 import ReportForm from "../components/ReportForm.tsx";
 import {FiPlusCircle} from "icons-react/fi";
