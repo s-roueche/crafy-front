@@ -1,15 +1,15 @@
-import type {TFunction} from "i18next";
+import type { TFunction } from "i18next";
 
 export function formatDateMonthYear(date: Date, t: TFunction): string {
-  return `${t(`month${date.getMonth() + 1}`)} ${date.getFullYear()}`
+  return `${t(`month${date.getMonth() + 1}`)} ${date.getFullYear()}`;
 }
 
 export function formatDateDayMonthYear(date: Date, t: TFunction): string {
-  return `${date.getDate()} ${t(`month${date.getMonth() + 1}`)} ${date.getFullYear()}`
+  return `${date.getDate()} ${t(`month${date.getMonth() + 1}`)} ${date.getFullYear()}`;
 }
 
 export function formatDateDayOfTheWeek(date: Date, t: TFunction): string {
-  return `${t(`day${date.getDay()}`)} ${date.getDate()} ${t(`month${date.getMonth() + 1}`)}`
+  return `${t(`day${date.getDay()}`)} ${date.getDate()} ${t(`month${date.getMonth() + 1}`)}`;
 }
 
 export function getNumberOfDaysInMonth(date: Date): number {
@@ -28,9 +28,10 @@ export function getNumberOfDaysInMonth(date: Date): number {
     case 10:
       return 30;
     case 1:
-      if (date.getFullYear()%100 === 0) return 28;
-      if (date.getFullYear()%4 === 0) return 29;
+      if (date.getFullYear() % 100 === 0) return 28;
+      if (date.getFullYear() % 4 === 0) return 29;
       return 28;
-    default: throw new Error("Invalid month");
+    default:
+      throw new Error("Invalid month");
   }
 }
