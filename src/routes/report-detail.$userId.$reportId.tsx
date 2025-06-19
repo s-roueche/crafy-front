@@ -7,26 +7,25 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Button,
-  useDisclosure
+  Button, Input, Form,
 } from "@heroui/react";
 import { useTranslation } from "react-i18next";
-import {useQuery, useMutation, useQueryClient} from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getReportById, getCompanyById, getTotalTimeByReport, getActivitiesByReport} from "../queries/getQueries.tsx";
 import { Spinner } from "@heroui/react";
 import { formatDateMonthYear, formatDateDayOfTheWeek, getNumberOfDaysInMonth } from "../utils/dateHandling.tsx";
-import { FiPlusCircle } from "icons-react/fi";
-import ActivityForm from "../components/ActivityForm.tsx";
 import type {TimeWorked, NullabbleTimeWorked} from "../queries/interfaces.tsx";
-import { updateActivityTimeWorked } from "../queries/putQueries.tsx";
+import { updateActivityTimeWorked, updateActivityComment } from "../queries/putQueries.tsx";
 import { createActivity } from "../queries/postQueries.tsx";
 import { deleteActivity } from "../queries/deleteQueries.tsx";
-import commentRendering from "../utils/commentRendering.tsx";
+import {useState} from "react";
+import {FiCheck, FiEdit3} from "icons-react/fi";
 
 
 export const Route = createFileRoute('/report-detail/$userId/$reportId')({
   component: RouteComponent,
 })
+
 
 type Item = {
   key: string,
@@ -35,13 +34,16 @@ type Item = {
   timeWorked: NullabbleTimeWorked,
   timeWorkedDisplay: string,
   comment: string
+  isModifiable: boolean,
+  setIsModifiable: (value: boolean) => void,
 }
+
 
 function RouteComponent() {
   const { t } = useTranslation();
-  const {isOpen, onOpen, onOpenChange, onClose} = useDisclosure();
   const { reportId } = Route.useParams();
   const queryClient = useQueryClient();
+  const [isModifiable, setIsModifiable] = useState(false);
   
   const reportQuery = useQuery({
     queryKey: ['report', reportId],
@@ -78,6 +80,7 @@ function RouteComponent() {
     )},
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activities', reportId] });
+      queryClient.invalidateQueries({ queryKey: ['totalTime', reportId] });
     },
   })
   
@@ -94,6 +97,7 @@ function RouteComponent() {
     )},
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activities', reportId] });
+      queryClient.invalidateQueries({ queryKey: ['totalTime', reportId] });
     },
   })
   
@@ -102,6 +106,20 @@ function RouteComponent() {
     mutationFn: async (data: {
       id: string;
     }) => {await deleteActivity(data.id)},
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['activities', reportId] });
+      queryClient.invalidateQueries({ queryKey: ['totalTime', reportId] });
+    },
+  })
+  
+  const editActivityCommentMutation = useMutation({
+    mutationKey: ['edit-activity-comment', reportId],
+    mutationFn: async (data: {
+      id: string;
+      comment: string;
+    }) => {
+      await updateActivityComment(data.id, data.comment);
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['activities', reportId] });
     },
@@ -137,6 +155,7 @@ function RouteComponent() {
       || activityTimeWorkedMutation.isPending
       || newActivityMutation.isPending
       || deleteActivityMutation.isPending
+      || editActivityCommentMutation.isPending
   ) {
     return (
         <div className="flex justify-center items-center">
@@ -173,9 +192,77 @@ function RouteComponent() {
     return <span>Error: {deleteActivityMutation.error.message}</span>
   }
   
+  if (editActivityCommentMutation.isError) {
+    return <span>Error: {editActivityCommentMutation.error.message}</span>
+  }
+  
+  function onSubmitComment(
+      activityId: string,
+      e: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined; }) {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.currentTarget));
+    
+    setIsModifiable(!isModifiable)
+    editActivityCommentMutation.mutate({
+      id: activityId,
+      comment: data.comment as string
+    });
+  }
+  
+  function getCommentDisplay(
+      timeWorked: NullabbleTimeWorked,
+      comment: string,
+      activityId: string
+  ) {
+    switch (timeWorked) {
+      case `NONE`:
+        return <div/>
+      case 'FULL_DAY':
+      case "HALF_DAY":
+        if (!isModifiable) {
+          return (
+              <div className={'flex space-x-14'}>
+                <div className={'self-center'}>{comment}</div>
+                <Button
+                    onPress={() => {
+                      setIsModifiable(!isModifiable)
+                    }}
+                    variant={'flat'}
+                    size={'sm'}
+                    isIconOnly
+                    endContent={<FiEdit3/>}
+                ></Button>
+              </div>
+          )
+        } else {
+          return (
+              <Form onSubmit={(e) => onSubmitComment(activityId, e)}>
+                <div className={'flex space-x-2'}>
+                  <Input
+                    defaultValue={comment}
+                    variant={'underlined'}
+                    name={'comment'}
+                />
+                  <Button
+                      type={"submit"}
+                      variant={'flat'}
+                      size={'sm'}
+                      isIconOnly
+                      endContent={<FiCheck/>}
+                  ></Button>
+                </div>
+              </Form>
+          )
+        }
+    }
+    
+  }
+  
   const rows: Item[] = [];
   
   for (let day = 1 ; day <= getNumberOfDaysInMonth(new Date(reportQuery.data.monthReport)); day++) {
+    
+    
     rows.push({
       key: String(day - 1),
       id: '',
@@ -183,6 +270,8 @@ function RouteComponent() {
       timeWorked: 'NONE',
       timeWorkedDisplay: '+',
       comment: '',
+      isModifiable,
+      setIsModifiable
     })
   }
   
@@ -251,17 +340,16 @@ function RouteComponent() {
                         >{item.timeWorkedDisplay}</Button>
                       </TableCell>
                       <TableCell className={'justify-items-end'}>
-                        <div className={'italic'}>{commentRendering(item.timeWorked, item.comment)}</div>
+                        <div className={'italic'}>{getCommentDisplay(
+                            item.timeWorked,
+                            item.comment,
+                            item.id
+                        )}</div>
                       </TableCell>
                     </TableRow>
                 )}
               </TableBody>
             </Table>
-            
-            <Button onPress={() => onOpen()} className={'p-5 mt-10'} startContent={<FiPlusCircle/>}>
-              {t('Add')}
-            </Button>
-            <ActivityForm isOpen={isOpen} onClose={onClose} onOpenChange={onOpenChange} reportId={reportId}/>
           </div>
           
         </div>
