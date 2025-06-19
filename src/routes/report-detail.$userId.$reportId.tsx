@@ -284,14 +284,14 @@ function RouteComponent() {
   }
   
   const rows: Item[] = [];
+  const reportDate = new Date(reportQuery.data.monthReport)
   
-  for (let day = 1 ; day <= getNumberOfDaysInMonth(new Date(reportQuery.data.monthReport)); day++) {
-    
+  for (let day = 1 ; day <= getNumberOfDaysInMonth(reportDate); day++) {
     
     rows.push({
       key: String(day - 1),
       id: '',
-      date: new Date(new Date(reportQuery.data.monthReport).setUTCDate(day)),
+      date: new Date(reportDate.setUTCDate(day)),
       timeWorked: 'NONE',
       timeWorkedDisplay: '+',
       comment: '',
@@ -326,7 +326,7 @@ function RouteComponent() {
           <div className={'text-2xl font-bold p-5 text-center'}>{t('Activities')}</div>
           
           <div>
-            <Table isVirtualized isStriped fullWidth sortDescriptor={{column: 'activity', direction: 'ascending'}}>
+            <Table isStriped fullWidth sortDescriptor={{column: 'activity', direction: 'ascending'}}>
               <TableHeader>
                 <TableColumn key={'date'} className={'text-medium'}> {t('Date')} </TableColumn>
                 <TableColumn key={'timeWorked'} className={'text-medium'}> {t('TimeWorked')} </TableColumn>

@@ -9,7 +9,7 @@ export function formatDateDayMonthYear(date: Date, t: TFunction): string {
 }
 
 export function formatDateDayOfTheWeek(date: Date, t: TFunction): string {
-  return `${t(`day${date.getDay() + 1}`)} ${date.getDate()} ${t(`month${date.getMonth() + 1}`)}`
+  return `${t(`day${date.getDay()}`)} ${date.getDate()} ${t(`month${date.getMonth() + 1}`)}`
 }
 
 export function getNumberOfDaysInMonth(date: Date): number {
