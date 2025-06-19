@@ -151,15 +151,53 @@ function RouteComponent() {
       reportQuery.isLoading
       || companyQuery.isLoading
       || totalTimeQuery.isLoading
-      || activitiesQuery.isLoading
+  ) {
+    return (
+        <div className="flex justify-center items-center">
+          <Spinner/>
+        </div>
+    )
+  }
+  
+  const reportInformationsComponent = <div className={'w-2/5'}>
+    <div className={'text-2xl font-bold p-5 text-center'}>
+      {t('Report')} {t('of')} {formatDateMonthYear(new Date(reportQuery.data.monthReport), t)}
+    </div>
+    
+    <Divider/>
+    
+    <div className={'text-lg p-5 pb-3'}>
+      {t('Client')} : {companyQuery.data.businessName}
+    </div>
+    <div className={'text-lg p-5 pt-0'}>
+      {t('TotalTime')} : {totalTimeQuery.data} {t('day')}{totalTimeQuery.data === 1?'':'s'}
+    </div>
+    
+    <Divider/>
+    
+    <div className={'flex justify-between'}>
+      <div className={'text-lg p-5'}>{t('Comment')} : {reportQuery.data.comment}</div>
+      <Button className={'m-4'} isIconOnly endContent={<FiEdit3/>}></Button>
+    </div>
+  
+  </div>
+  
+  if (
+      activitiesQuery.isLoading
       || activityTimeWorkedMutation.isPending
       || newActivityMutation.isPending
       || deleteActivityMutation.isPending
       || editActivityCommentMutation.isPending
   ) {
     return (
-        <div className="flex justify-center items-center">
-          <Spinner/>
+        <div className={'flex gap-4'}>
+          {reportInformationsComponent}
+          
+          <Divider orientation="vertical" className={'h-screen'} />
+      
+          <div className="flex-1 flex justify-center w-full">
+            <Spinner/>
+          </div>
         </div>
     )
   }
@@ -293,27 +331,7 @@ function RouteComponent() {
   
   return (
       <div className={'flex gap-4'}>
-        <div className={'w-2/5'}>
-          <div className={'text-2xl font-bold p-5 text-center'}>
-            {t('Report')} {t('of')} {formatDateMonthYear(new Date(reportQuery.data.monthReport), t)}
-          </div>
-          
-          <Divider/>
-          
-          <div className={'text-lg p-5 pb-3'}>
-            {t('Client')} : {companyQuery.data.businessName}
-          </div>
-          <div className={'text-lg p-5 pt-0'}>
-            {t('TotalTime')} : {totalTimeQuery.data} {t('day')}{totalTimeQuery.data === 1?'':'s'}
-          </div>
-          
-          <Divider/>
-          
-          <div className={'text-lg p-5'}>
-            {t('Comment')} : {reportQuery.data.comment}
-          </div>
-        
-        </div>
+        {reportInformationsComponent}
         
         <Divider orientation="vertical" className={'h-screen'} />
         
