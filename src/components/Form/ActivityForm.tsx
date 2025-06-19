@@ -12,8 +12,8 @@ import {
 } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { createActivity } from "../queries/postQueries";
-import type { TimeWorked } from "../queries/interfaces.tsx";
+import { createActivity } from "../../queries/postQueries.tsx";
+import type { TimeWorked } from "../../queries/interfaces.tsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function ReportForm(props: {

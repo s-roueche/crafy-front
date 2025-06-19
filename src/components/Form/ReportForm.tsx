@@ -13,9 +13,9 @@ import {
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getAllCompaniesByUser } from "../queries/getQueries";
-import type { Company } from "../queries/interfaces.tsx";
-import { createReport } from "../queries/postQueries";
+import { getAllCompaniesByUser } from "../../queries/getQueries.tsx";
+import type { Company } from "../../queries/interfaces.tsx";
+import { createReport } from "../../queries/postQueries.tsx";
 
 export default function ReportForm(props: {
   isOpen: boolean;

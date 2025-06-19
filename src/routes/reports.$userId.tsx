@@ -17,8 +17,9 @@ import type { Company, Report } from "../queries/interfaces.tsx";
 import { useTranslation } from "react-i18next";
 import { formatDateMonthYear } from "../utils/dateHandling.tsx";
 import { Button, type Selection, Spinner, useDisclosure } from "@heroui/react";
-import ReportForm from "../components/ReportForm.tsx";
+import ReportForm from "../components/Form/ReportForm.tsx";
 import { FiPlusCircle } from "icons-react/fi";
+import PageTitle from "../components/Layout/PageTitle.tsx";
 
 export const Route = createFileRoute("/reports/$userId")({
   component: RouteComponent,
@@ -67,9 +68,7 @@ function RouteComponent() {
   if (reportsQuery.isLoading) {
     return (
       <>
-        <h1 className="text-2xl font-bold justify-self-center p-10">
-          {t("Reports")}
-        </h1>
+        <PageTitle title={t("Reports")} />
         <div className="flex justify-center items-center">
           <Spinner />
         </div>
@@ -80,9 +79,7 @@ function RouteComponent() {
   if (reportsQuery.isError) {
     return (
       <>
-        <h1 className="text-2xl font-bold justify-self-center p-10">
-          {t("Reports")}
-        </h1>
+        <PageTitle title={t("Reports")} />
         <span>Error: {reportsQuery.error.message}</span>
       </>
     );
@@ -91,9 +88,7 @@ function RouteComponent() {
   if (companiesQuery.isError) {
     return (
       <>
-        <h1 className="text-2xl font-bold justify-self-center p-10">
-          {t("Reports")}
-        </h1>
+        <PageTitle title={t("Reports")} />
         <span>Error: {companiesQuery.error.message}</span>
       </>
     );
@@ -126,9 +121,7 @@ function RouteComponent() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold justify-self-center p-10">
-        {t("Reports")}
-      </h1>
+      <PageTitle title={t("Reports")} />
       <Table
         aria-label="reports table"
         selectionMode={"single"}

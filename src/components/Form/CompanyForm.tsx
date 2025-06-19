@@ -9,7 +9,7 @@ import {
   Spinner,
 } from "@heroui/react";
 import { useTranslation } from "react-i18next";
-import { createCompany } from "../queries/postQueries";
+import { createCompany } from "../../queries/postQueries.tsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export default function CompanyForm(props: {
