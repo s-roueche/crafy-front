@@ -7,7 +7,7 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Button, Input, Form,
+  Button,
 } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
@@ -15,11 +15,12 @@ import { getReportById, getCompanyById, getTotalTimeByReport, getActivitiesByRep
 import { Spinner } from "@heroui/react";
 import { formatDateMonthYear, formatDateDayOfTheWeek, getNumberOfDaysInMonth } from "../utils/dateHandling.tsx";
 import type {TimeWorked, NullabbleTimeWorked} from "../queries/interfaces.tsx";
-import { updateActivityTimeWorked, updateActivityComment } from "../queries/putQueries.tsx";
+import { updateActivityTimeWorked, updateActivityComment, updateReportComment } from "../queries/putQueries.tsx";
 import { createActivity } from "../queries/postQueries.tsx";
 import { deleteActivity } from "../queries/deleteQueries.tsx";
-import {useState} from "react";
-import {FiCheck, FiEdit3} from "icons-react/fi";
+import { useState} from "react";
+import getCommentDisplay from "../utils/commentDisplay.tsx";
+
 
 
 export const Route = createFileRoute('/report-detail/$userId/$reportId')({
@@ -43,7 +44,8 @@ function RouteComponent() {
   const { t } = useTranslation();
   const { reportId } = Route.useParams();
   const queryClient = useQueryClient();
-  const [isModifiable, setIsModifiable] = useState(false);
+  const [activityCommentsAreEditable, setActivityCommentsAreEditable] = useState(false);
+  const [reportCommentIsEditable, setReportCommentIsEditable] = useState(false)
   
   const reportQuery = useQuery({
     queryKey: ['report', reportId],
@@ -125,6 +127,18 @@ function RouteComponent() {
     },
   })
   
+  const editReportCommentMutation = useMutation({
+    mutationKey: ['edit-report-comment-mutation', reportId],
+    mutationFn: async (data : {
+      comment: string;
+    }) => {
+      await updateReportComment(reportId, data.comment);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['report', reportId] });
+    },
+  })
+  
   function changeTimeWorked(item: Item) {
     switch (item.timeWorked) {
       case `NONE`:
@@ -151,6 +165,7 @@ function RouteComponent() {
       reportQuery.isLoading
       || companyQuery.isLoading
       || totalTimeQuery.isLoading
+      || editReportCommentMutation.isPending
   ) {
     return (
         <div className="flex justify-center items-center">
@@ -176,8 +191,15 @@ function RouteComponent() {
     <Divider/>
     
     <div className={'flex justify-between'}>
-      <div className={'text-lg p-5'}>{t('Comment')} : {reportQuery.data.comment}</div>
-      <Button className={'m-4'} isIconOnly endContent={<FiEdit3/>}></Button>
+      <div className={'text-lg p-5 pr-0'}>{t('Comment')}:</div>
+      {getCommentDisplay(
+          true,
+          reportQuery.data.comment,
+          onSubmitReportComment,
+          reportCommentIsEditable,
+          setReportCommentIsEditable,
+          'p-4'
+      )}
     </div>
   
   </div>
@@ -234,66 +256,31 @@ function RouteComponent() {
     return <span>Error: {editActivityCommentMutation.error.message}</span>
   }
   
-  function onSubmitComment(
+  if (editReportCommentMutation.isError) {
+    return <span>Error: {editReportCommentMutation.error.message}</span>
+  }
+  
+  function onSubmitActivityComment(
       activityId: string,
       e: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined; }) {
     e.preventDefault();
     const data = Object.fromEntries(new FormData(e.currentTarget));
     
-    setIsModifiable(!isModifiable)
+    setActivityCommentsAreEditable(false)
     editActivityCommentMutation.mutate({
       id: activityId,
       comment: data.comment as string
     });
   }
   
-  function getCommentDisplay(
-      timeWorked: NullabbleTimeWorked,
-      comment: string,
-      activityId: string
-  ) {
-    switch (timeWorked) {
-      case `NONE`:
-        return <div/>
-      case 'FULL_DAY':
-      case "HALF_DAY":
-        if (!isModifiable) {
-          return (
-              <div className={'flex space-x-14'}>
-                <div className={'self-center'}>{comment}</div>
-                <Button
-                    onPress={() => {
-                      setIsModifiable(!isModifiable)
-                    }}
-                    variant={'flat'}
-                    size={'sm'}
-                    isIconOnly
-                    endContent={<FiEdit3/>}
-                ></Button>
-              </div>
-          )
-        } else {
-          return (
-              <Form onSubmit={(e) => onSubmitComment(activityId, e)}>
-                <div className={'flex space-x-2'}>
-                  <Input
-                    defaultValue={comment}
-                    variant={'underlined'}
-                    name={'comment'}
-                />
-                  <Button
-                      type={"submit"}
-                      variant={'flat'}
-                      size={'sm'}
-                      isIconOnly
-                      endContent={<FiCheck/>}
-                  ></Button>
-                </div>
-              </Form>
-          )
-        }
-    }
+  function onSubmitReportComment(e: { preventDefault: () => void; currentTarget: HTMLFormElement | undefined; }) {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(e.currentTarget));
     
+    setReportCommentIsEditable(false)
+    editReportCommentMutation.mutate({
+      comment: data.comment as string,
+    })
   }
   
   const rows: Item[] = [];
@@ -308,8 +295,8 @@ function RouteComponent() {
       timeWorked: 'NONE',
       timeWorkedDisplay: '+',
       comment: '',
-      isModifiable,
-      setIsModifiable
+      isModifiable: activityCommentsAreEditable,
+      setIsModifiable: setActivityCommentsAreEditable
     })
   }
   
@@ -359,9 +346,11 @@ function RouteComponent() {
                       </TableCell>
                       <TableCell className={'justify-items-end'}>
                         <div className={'italic'}>{getCommentDisplay(
-                            item.timeWorked,
+                            item.timeWorked != 'NONE',
                             item.comment,
-                            item.id
+                            (e) => onSubmitActivityComment(item.id, e),
+                            activityCommentsAreEditable,
+                            setActivityCommentsAreEditable
                         )}</div>
                       </TableCell>
                     </TableRow>
