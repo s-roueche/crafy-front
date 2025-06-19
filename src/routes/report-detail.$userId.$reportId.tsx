@@ -173,7 +173,7 @@ function RouteComponent() {
   }
 
   const reportInformationsComponent = (
-    <div className={"w-2/5"}>
+    <div>
       <div className={"text-2xl font-bold p-5 text-center"}>
         {t("Report")} {t("of")}{" "}
         {formatDateMonthYear(new Date(reportQuery.data.monthReport), t)}
@@ -324,70 +324,65 @@ function RouteComponent() {
   }
 
   return (
-    <div className={"flex gap-4"}>
+    <div className={"grid grid-cols-[400px_1fr] gap-6"}>
       {reportInformationsComponent}
-
-      <Divider orientation="vertical" className={"h-screen"} />
-
       <div>
         <div className={"text-2xl font-bold p-5 text-center"}>
           {t("Activities")}
         </div>
 
-        <div>
-          <Table
-            isStriped
-            fullWidth
-            sortDescriptor={{ column: "activity", direction: "ascending" }}
-          >
-            <TableHeader>
-              <TableColumn key={"date"} className={"text-medium"}>
-                {" "}
-                {t("Date")}{" "}
-              </TableColumn>
-              <TableColumn key={"timeWorked"} className={"text-medium"}>
-                {" "}
-                {t("TimeWorked")}{" "}
-              </TableColumn>
-              <TableColumn key={"comment"} className={"text-medium"}>
-                {" "}
-                {t("Comment")}{" "}
-              </TableColumn>
-            </TableHeader>
-            <TableBody items={rows}>
-              {(item) => (
-                <TableRow key={item.key}>
-                  <TableCell>
-                    <div className={"text-medium"}>
-                      {formatDateDayOfTheWeek(item.date, t)}
-                    </div>
-                  </TableCell>
-                  <TableCell className={"flex justify-center"}>
-                    <Button
-                      isIconOnly
-                      onPress={() => {
-                        changeTimeWorked(item);
-                      }}
-                    >
-                      {item.timeWorkedDisplay}
-                    </Button>
-                  </TableCell>
-                  <TableCell className={"justify-items-end"}>
-                    <div className={"italic"}>
-                      {getCommentDisplay(
-                        item.timeWorked != "NONE",
-                        item.comment,
-                        (e) => onSubmitActivityComment(item.id, e),
-                        activityCommentsAreEditable,
-                        setActivityCommentsAreEditable,
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
-        </div>
+        <Table
+          isStriped
+          fullWidth
+          sortDescriptor={{ column: "activity", direction: "ascending" }}
+        >
+          <TableHeader>
+            <TableColumn key={"date"} className={"text-medium"}>
+              {" "}
+              {t("Date")}{" "}
+            </TableColumn>
+            <TableColumn key={"timeWorked"} className={"text-medium"}>
+              {" "}
+              {t("TimeWorked")}{" "}
+            </TableColumn>
+            <TableColumn key={"comment"} className={"text-medium"}>
+              {" "}
+              {t("Comment")}{" "}
+            </TableColumn>
+          </TableHeader>
+          <TableBody items={rows}>
+            {(item) => (
+              <TableRow key={item.key}>
+                <TableCell>
+                  <div className={"text-medium"}>
+                    {formatDateDayOfTheWeek(item.date, t)}
+                  </div>
+                </TableCell>
+                <TableCell className={"flex justify-center"}>
+                  <Button
+                    isIconOnly
+                    onPress={() => {
+                      changeTimeWorked(item);
+                    }}
+                  >
+                    {item.timeWorkedDisplay}
+                  </Button>
+                </TableCell>
+                <TableCell className={"justify-items-end"}>
+                  <div className={"italic"}>
+                    {getCommentDisplay(
+                      item.timeWorked != "NONE",
+                      item.comment,
+                      (e) => onSubmitActivityComment(item.id, e),
+                      activityCommentsAreEditable,
+                      setActivityCommentsAreEditable,
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   );
