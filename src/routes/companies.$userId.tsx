@@ -12,11 +12,12 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllCompaniesByUser } from "../queries/getQueries.tsx";
 import type { Company } from "../queries/interfaces.tsx";
 import { useTranslation } from "react-i18next";
-import { Button, Spinner, useDisclosure } from "@heroui/react";
+import { Button, useDisclosure } from "@heroui/react";
 import { FiPlusCircle } from "icons-react/fi";
 import CompanyForm from "../components/Form/CompanyForm.tsx";
 import ErrorMessage from "../components/Feedback/ErrorMessage.tsx";
 import PageTitle from "../components/Layout/PageTitle.tsx";
+import Loading from "../components/Feedback/Loading.tsx";
 
 type Row = {
   key: string;
@@ -47,7 +48,7 @@ function RouteComponent() {
   return (
     <>
       {isError && <ErrorMessage error={error.message} title={t("Companies")} />}
-      {isLoading && <Spinner title={t("Companies")} />}
+      {isLoading && <Loading title={t("Companies")} />}
       {isSuccess && (
         <>
           <PageTitle title={t("Companies")} />
