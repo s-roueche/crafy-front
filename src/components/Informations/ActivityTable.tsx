@@ -11,7 +11,6 @@ import {
   formatDateDayOfTheWeek,
   getNumberOfDaysInMonth,
 } from "../../usefulFunctions/dateHandling.tsx";
-import getCommentDisplay from "../../usefulFunctions/commentDisplay.tsx";
 import { onSubmitActivityComment } from "../../usefulFunctions/submitFunctions.tsx";
 import { useTranslation } from "react-i18next";
 import type {
@@ -28,6 +27,7 @@ import { createActivity } from "../../queries/postQueries.tsx";
 import { deleteActivity } from "../../queries/deleteQueries.tsx";
 import { useState } from "react";
 import ErrorMessage from "../Feedback/ErrorMessage.tsx";
+import EditableComment from "../Editables/EditableComment.tsx";
 
 type ActivityTableProps = {
   reportId: string;
@@ -215,19 +215,20 @@ const ActivityTable = ({
                   </TableCell>
                   <TableCell className={"justify-items-end"}>
                     <div className={"italic"}>
-                      {getCommentDisplay(
-                        item.timeWorked != "NONE",
-                        item.comment,
-                        (e) =>
+                      <EditableComment
+                        isVisible={item.timeWorked != "NONE"}
+                        comment={item.comment}
+                        onSubmit={(e) =>
                           onSubmitActivityComment(
                             item.id,
                             e,
                             setActivityCommentsAreEditable,
                             editActivityCommentMutation.mutate,
-                          ),
-                        activityCommentsAreEditable,
-                        setActivityCommentsAreEditable,
-                      )}
+                          )
+                        }
+                        isEditable={activityCommentsAreEditable}
+                        setIsEditable={setActivityCommentsAreEditable}
+                      />
                     </div>
                   </TableCell>
                 </TableRow>

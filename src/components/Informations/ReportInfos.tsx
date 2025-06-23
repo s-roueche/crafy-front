@@ -1,10 +1,10 @@
 import { formatDateMonthYear } from "../../usefulFunctions/dateHandling.tsx";
 import { Divider } from "@heroui/react";
-import getCommentDisplay from "../../usefulFunctions/commentDisplay.tsx";
 import { useTranslation } from "react-i18next";
 import { onSubmitReportComment } from "../../usefulFunctions/submitFunctions.tsx";
 import type { SetStateAction } from "react";
 import type { UseMutateFunction } from "@tanstack/react-query";
+import EditableComment from "../Editables/EditableComment.tsx";
 
 type ReportInfosProps = {
   reportMonth: Date;
@@ -53,20 +53,21 @@ const ReportInfos = ({
       <Divider />
 
       <div className={"flex justify-between"}>
-        <div className={"text-lg p-5 pr-0"}>{t("Comment")}:</div>
-        {getCommentDisplay(
-          true,
-          reportComment,
-          (e) =>
+        <div className={"text-lg p-5"}>{t("Comment")}:</div>
+        <EditableComment
+          isVisible={true}
+          comment={reportComment}
+          onSubmit={(e) =>
             onSubmitReportComment(
               e,
               setReportCommentIsEditable,
               mutateReportComment,
-            ),
-          reportCommentIsEditable,
-          setReportCommentIsEditable,
-          "p-4",
-        )}
+            )
+          }
+          isEditable={reportCommentIsEditable}
+          setIsEditable={setReportCommentIsEditable}
+          classname={"p-5"}
+        />
       </div>
     </div>
   );

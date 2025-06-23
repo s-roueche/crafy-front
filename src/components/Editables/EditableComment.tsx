@@ -1,18 +1,27 @@
-import type { FormEvent, SetStateAction } from "react";
 import { Button, Form, Input } from "@heroui/react";
 import { FiCheck, FiEdit3 } from "icons-react/fi";
+import type { FormEvent, SetStateAction } from "react";
 
-export default function getCommentDisplay(
-  isVisible: boolean,
-  comment: string,
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void,
-  isEditable: boolean,
-  setIsEditable: (value: SetStateAction<boolean>) => void,
-  classname?: string,
-) {
-  if (isVisible) {
-    if (!isEditable) {
-      return (
+type TimeWorkedEditableProps = {
+  isVisible: boolean;
+  comment: string;
+  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  isEditable: boolean;
+  setIsEditable: (value: SetStateAction<boolean>) => void;
+  classname?: string;
+};
+
+const EditableComment = ({
+  isVisible,
+  comment,
+  onSubmit,
+  isEditable,
+  setIsEditable,
+  classname,
+}: TimeWorkedEditableProps) => {
+  return (
+    <>
+      {isVisible && !isEditable && (
         <div className={"flex space-x-14 justify-between " + classname}>
           <div className={"self-center"}>{comment}</div>
           <Button
@@ -25,9 +34,9 @@ export default function getCommentDisplay(
             endContent={<FiEdit3 />}
           ></Button>
         </div>
-      );
-    } else {
-      return (
+      )}
+
+      {isVisible && isEditable && (
         <Form onSubmit={onSubmit}>
           <div className={"flex space-x-2 " + classname}>
             <Input
@@ -44,9 +53,11 @@ export default function getCommentDisplay(
             ></Button>
           </div>
         </Form>
-      );
-    }
-  } else {
-    return <div />;
-  }
-}
+      )}
+
+      {!isVisible && <div />}
+    </>
+  );
+};
+
+export default EditableComment;

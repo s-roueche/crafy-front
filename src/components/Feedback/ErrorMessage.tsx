@@ -4,7 +4,7 @@ const ErrorMessage = ({ error, title }: { error: string; title?: string }) => {
       <h1 className="text-2xl font-bold justify-self-center p-10">
         {title ? title : ""}
       </h1>
-      <span>Error: {error}</span>
+      <div>Error: {error}</div>
     </>
   );
 };

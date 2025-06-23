@@ -82,7 +82,7 @@ function RouteComponent() {
         companyQuery.isSuccess &&
         totalTimeQuery.isSuccess &&
         (activitiesQuery.isLoading || editReportCommentMutation.isPending) && (
-          <div className={"flex gap-4"}>
+          <div className={"grid grid-cols-[400px_1fr] gap-6"}>
             <ReportInfos
               reportMonth={new Date(reportQuery.data.monthReport)}
               companyBusinessName={reportQuery.data.businessName}

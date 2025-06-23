@@ -1,0 +1,133 @@
+import {
+  getKeyValue,
+  Table,
+  TableBody,
+  TableCell,
+  TableColumn,
+  TableHeader,
+  TableRow,
+} from "@heroui/table";
+import type { Company, Report } from "../../queries/interfaces.tsx";
+import { formatDateMonthYear } from "../../usefulFunctions/dateHandling.tsx";
+import type { Selection } from "@heroui/react";
+import { useNavigate } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
+import { useQuery } from "@tanstack/react-query";
+import {
+  getAllCompaniesByUser,
+  getAllReportsByUser,
+} from "../../queries/getQueries.tsx";
+import ErrorMessage from "../Feedback/ErrorMessage.tsx";
+import Loading from "../Feedback/Loading.tsx";
+
+type ReportsTableProps = {
+  userId: string;
+};
+
+type Row = {
+  key: string;
+  month: string;
+  client: string;
+  comment: string;
+};
+
+const ReportsTable = ({ userId }: ReportsTableProps) => {
+  const navigate = useNavigate();
+  const { t } = useTranslation();
+  const reportsQuery = useQuery({
+    queryKey: ["allReports", userId],
+    queryFn: () => getAllReportsByUser(userId),
+    retryDelay: 1000,
+  });
+  const companiesQuery = useQuery({
+    queryKey: ["allCompanies", userId],
+    queryFn: () => getAllCompaniesByUser(userId),
+    retryDelay: 1000,
+  });
+
+  const columns = [
+    {
+      key: "month",
+      label: t("MONTH"),
+    },
+    {
+      key: "client",
+      label: t("CLIENT"),
+    },
+    {
+      key: "comment",
+      label: t("COMMENT"),
+    },
+  ];
+
+  const rows: Row[] =
+    reportsQuery.data && companiesQuery.data
+      ? reportsQuery.data.map((report: Report) => {
+          const client = companiesQuery.data.find(
+            (company: Company) => company.id === report.clientId,
+          );
+          const formattedDate = formatDateMonthYear(
+            new Date(report.monthReport),
+            t,
+          );
+
+          return {
+            key: report.id,
+            month: formattedDate,
+            client: client.businessName,
+            comment: report.comment,
+          };
+        })
+      : [];
+
+  async function goToDetail(selection: Selection) {
+    const reportId = Array.from(selection)[0];
+    await navigate({
+      to: "/report-detail/$userId/$reportId",
+      params: {
+        userId,
+        reportId: reportId,
+      },
+    });
+  }
+
+  return (
+    <>
+      {reportsQuery.isError && (
+        <ErrorMessage error={reportsQuery.error.message} />
+      )}
+
+      {companiesQuery.isError && (
+        <ErrorMessage error={companiesQuery.error.message} />
+      )}
+
+      {(companiesQuery.isLoading || reportsQuery.isLoading) && <Loading />}
+
+      {reportsQuery.isSuccess && companiesQuery.isSuccess && (
+        <Table
+          aria-label="reports table"
+          selectionMode={"single"}
+          selectedKeys={[]}
+          onSelectionChange={goToDetail}
+        >
+          <TableHeader columns={columns}>
+            {(column) => (
+              <TableColumn key={column.key}>{column.label}</TableColumn>
+            )}
+          </TableHeader>
+          <TableBody items={rows}>
+            {(item) => (
+              <TableRow key={item.key}>
+                {(columnKey) => (
+                  <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      )}
+    </>
+  );
+};
+
+export default ReportsTable;
