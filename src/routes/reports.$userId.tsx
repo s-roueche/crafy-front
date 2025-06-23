@@ -1,8 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import PageTitle from "../components/Layout/PageTitle.tsx";
-import ReportsTable from "../components/Informations/ReportsTable.tsx";
-import ButtonReportForm from "../components/Form/ButtonReportForm.tsx";
+import ReportsTable from "../components/Table/ReportsTable.tsx";
+import FormButton from "../components/Form/FormButton.tsx";
+import ReportForm from "../components/Form/ReportForm.tsx";
 
 export const Route = createFileRoute("/reports/$userId")({
   component: RouteComponent,
@@ -17,7 +18,7 @@ function RouteComponent() {
       <>
         <PageTitle title={t("Reports")} />
         <ReportsTable userId={userId} />
-        <ButtonReportForm userId={userId} />
+        <FormButton userId={userId} formComponent={ReportForm} />
       </>
     </>
   );

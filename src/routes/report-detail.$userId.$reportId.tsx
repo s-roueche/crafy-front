@@ -12,7 +12,7 @@ import { useState } from "react";
 import Loading from "../components/Feedback/Loading.tsx";
 import ReportInfos from "../components/Informations/ReportInfos.tsx";
 import ErrorMessage from "../components/Feedback/ErrorMessage.tsx";
-import ActivityTable from "../components/Informations/ActivityTable.tsx";
+import ActivityTable from "../components/Table/ActivityTable.tsx";
 
 export const Route = createFileRoute("/report-detail/$userId/$reportId")({
   component: RouteComponent,

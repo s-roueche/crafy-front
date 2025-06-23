@@ -1,15 +1,23 @@
 import { Button, useDisclosure } from "@heroui/react";
 import { FiPlusCircle } from "icons-react/fi";
-import ReportForm from "./ReportForm.tsx";
 import { useTranslation } from "react-i18next";
+import type { ComponentType } from "react";
 
-type ButtonReportFormProps = {
+type FormButtonProps = {
   userId: string;
+  formComponent: ComponentType<{
+    isOpen: boolean;
+    onOpenChange: () => void;
+    onClose: () => void;
+    userId: string;
+  }>;
 };
 
-const ButtonReportForm = ({ userId }: ButtonReportFormProps) => {
+const FormButton = ({ userId, formComponent }: FormButtonProps) => {
   const { t } = useTranslation();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
+  const FormComponent = formComponent;
 
   return (
     <>
@@ -20,7 +28,7 @@ const ButtonReportForm = ({ userId }: ButtonReportFormProps) => {
       >
         {t("Add")}
       </Button>
-      <ReportForm
+      <FormComponent
         isOpen={isOpen}
         onClose={onClose}
         onOpenChange={onOpenChange}
@@ -30,4 +38,4 @@ const ButtonReportForm = ({ userId }: ButtonReportFormProps) => {
   );
 };
 
-export default ButtonReportForm;
+export default FormButton;
