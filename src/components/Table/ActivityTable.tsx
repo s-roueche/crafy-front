@@ -1,5 +1,4 @@
 import {
-  Button,
   Table,
   TableBody,
   TableCell,
@@ -16,18 +15,13 @@ import { useTranslation } from "react-i18next";
 import type {
   Activity,
   NullabbleTimeWorked,
-  TimeWorked,
 } from "../../queries/interfaces.tsx";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import {
-  updateActivityComment,
-  updateActivityTimeWorked,
-} from "../../queries/putQueries.tsx";
-import { createActivity } from "../../queries/postQueries.tsx";
-import { deleteActivity } from "../../queries/deleteQueries.tsx";
+import { updateActivityComment } from "../../queries/putQueries.tsx";
 import { useState } from "react";
 import ErrorMessage from "../Feedback/ErrorMessage.tsx";
 import EditableComment from "../Editables/EditableComment.tsx";
+import TimeWorkedButton from "../Button/TimeWorkedButton.tsx";
 
 type ActivityTableProps = {
   reportId: string;
@@ -56,51 +50,6 @@ const ActivityTable = ({
   const [activityCommentsAreEditable, setActivityCommentsAreEditable] =
     useState(false);
   const [mutationError, setMutationError] = useState("");
-
-  const activityTimeWorkedMutation = useMutation({
-    mutationKey: ["activityTimeWorked", reportId],
-    mutationFn: async (data: { id: string; timeWorked: TimeWorked }) => {
-      await updateActivityTimeWorked(data.id, data.timeWorked);
-    },
-    onSuccess: () => {
-      setMutationError("");
-      queryClient.invalidateQueries({ queryKey: ["activities", reportId] });
-      queryClient.invalidateQueries({ queryKey: ["totalTime", reportId] });
-    },
-    onError: (error) => {
-      setMutationError(error.message);
-    },
-  });
-
-  const newActivityMutation = useMutation({
-    mutationKey: ["add-activity", reportId],
-    mutationFn: async (data: { timeWorked: TimeWorked; date: Date }) => {
-      await createActivity(data.date, reportId, data.timeWorked, "");
-    },
-    onSuccess: () => {
-      setMutationError("");
-      queryClient.invalidateQueries({ queryKey: ["activities", reportId] });
-      queryClient.invalidateQueries({ queryKey: ["totalTime", reportId] });
-    },
-    onError: (error) => {
-      setMutationError(error.message);
-    },
-  });
-
-  const deleteActivityMutation = useMutation({
-    mutationKey: ["delete-activity", reportId],
-    mutationFn: async (data: { id: string }) => {
-      await deleteActivity(data.id);
-    },
-    onSuccess: () => {
-      setMutationError("");
-      queryClient.invalidateQueries({ queryKey: ["activities", reportId] });
-      queryClient.invalidateQueries({ queryKey: ["totalTime", reportId] });
-    },
-    onError: (error) => {
-      setMutationError(error.message);
-    },
-  });
   const editActivityCommentMutation = useMutation({
     mutationKey: ["edit-activity-comment", reportId],
     mutationFn: async (data: { id: string; comment: string }) => {
@@ -114,26 +63,6 @@ const ActivityTable = ({
       setMutationError(error.message);
     },
   });
-
-  function changeTimeWorked(item: Item) {
-    switch (item.timeWorked) {
-      case `NONE`:
-        newActivityMutation.mutate({
-          date: item.date,
-          timeWorked: "FULL_DAY",
-        });
-        break;
-      case "FULL_DAY":
-        activityTimeWorkedMutation.mutate({
-          id: item.id,
-          timeWorked: "HALF_DAY",
-        });
-        break;
-      case "HALF_DAY":
-        deleteActivityMutation.mutate({ id: item.id });
-        break;
-    }
-  }
 
   const rows: Item[] = [];
 
@@ -204,14 +133,13 @@ const ActivityTable = ({
                     </div>
                   </TableCell>
                   <TableCell className={"flex justify-center"}>
-                    <Button
-                      isIconOnly
-                      onPress={() => {
-                        changeTimeWorked(item);
-                      }}
-                    >
-                      {item.timeWorkedDisplay}
-                    </Button>
+                    <TimeWorkedButton
+                      reportId={reportId}
+                      activityTimeWorked={item.timeWorked}
+                      activityDate={item.date}
+                      activityId={item.id}
+                      timeWorkedDisplay={item.timeWorkedDisplay}
+                    />
                   </TableCell>
                   <TableCell className={"justify-items-end"}>
                     <div className={"italic"}>

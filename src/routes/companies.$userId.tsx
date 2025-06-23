@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import CompanyForm from "../components/Form/CompanyForm.tsx";
 import PageTitle from "../components/Layout/PageTitle.tsx";
 import CompaniesTable from "../components/Table/CompaniesTable.tsx";
-import FormButton from "../components/Form/FormButton.tsx";
+import FormButton from "../components/Button/FormButton.tsx";
 export const Route = createFileRoute("/companies/$userId")({
   component: RouteComponent,
 });
