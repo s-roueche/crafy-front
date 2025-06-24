@@ -1,26 +1,14 @@
 import { formatDateMonthYear } from "../../usefulFunctions/dateHandling.tsx";
 import { Divider } from "@heroui/react";
 import { useTranslation } from "react-i18next";
-import { onSubmitReportComment } from "../../usefulFunctions/submitFunctions.tsx";
-import type { SetStateAction } from "react";
-import type { UseMutateFunction } from "@tanstack/react-query";
-import EditableComment from "../Editables/EditableComment.tsx";
+import EditableReportComment from "../Editables/EditableReportComment.tsx";
 
 type ReportInfosProps = {
   reportMonth: Date;
   companyBusinessName: string;
   totalTimeWorked: number;
   reportComment: string;
-  reportCommentIsEditable: boolean;
-  setReportCommentIsEditable: (isEditable: SetStateAction<boolean>) => void;
-  mutateReportComment: UseMutateFunction<
-    void,
-    Error,
-    {
-      comment: string;
-    },
-    unknown
-  >;
+  reportId: string;
 };
 
 const ReportInfos = ({
@@ -28,9 +16,7 @@ const ReportInfos = ({
   companyBusinessName,
   totalTimeWorked,
   reportComment,
-  reportCommentIsEditable,
-  setReportCommentIsEditable,
-  mutateReportComment,
+  reportId,
 }: ReportInfosProps) => {
   const { t } = useTranslation();
 
@@ -52,22 +38,9 @@ const ReportInfos = ({
 
       <Divider />
 
-      <div className={"flex justify-between"}>
+      <div>
         <div className={"text-lg p-5"}>{t("Comment")}:</div>
-        <EditableComment
-          isVisible={true}
-          comment={reportComment}
-          onSubmit={(e) =>
-            onSubmitReportComment(
-              e,
-              setReportCommentIsEditable,
-              mutateReportComment,
-            )
-          }
-          isEditable={reportCommentIsEditable}
-          setIsEditable={setReportCommentIsEditable}
-          classname={"p-5"}
-        />
+        <EditableReportComment comment={reportComment} reportId={reportId} />
       </div>
     </div>
   );

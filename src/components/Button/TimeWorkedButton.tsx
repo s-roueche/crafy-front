@@ -9,13 +9,14 @@ import { createActivity } from "../../queries/postQueries.tsx";
 import { deleteActivity } from "../../queries/deleteQueries.tsx";
 import { useState } from "react";
 import ErrorMessage from "../Feedback/ErrorMessage.tsx";
+import { getTimeWorkedDisplayString } from "../../usefulFunctions/getTimeWorkedDisplayString.tsx";
+import { useTranslation } from "react-i18next";
 
 type TimeWorkedButtonProps = {
   reportId: string;
   activityTimeWorked: NullabbleTimeWorked;
   activityDate: Date;
   activityId: string;
-  timeWorkedDisplay: string;
 };
 
 const TimeWorkedButton = ({
@@ -23,9 +24,9 @@ const TimeWorkedButton = ({
   activityTimeWorked,
   activityId,
   activityDate,
-  timeWorkedDisplay,
 }: TimeWorkedButtonProps) => {
   const queryClient = useQueryClient();
+  const { t } = useTranslation();
   const [mutationError, setMutationError] = useState("");
 
   const activityTimeWorkedMutation = useMutation({
@@ -108,7 +109,7 @@ const TimeWorkedButton = ({
             changeTimeWorked(activityTimeWorked, activityDate, activityId);
           }}
         >
-          {timeWorkedDisplay}
+          {getTimeWorkedDisplayString(activityTimeWorked, t)}
         </Button>
       )}
     </>

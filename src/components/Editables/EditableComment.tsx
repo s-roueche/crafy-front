@@ -9,6 +9,7 @@ type TimeWorkedEditableProps = {
   isEditable: boolean;
   setIsEditable: (value: SetStateAction<boolean>) => void;
   classname?: string;
+  size?: "sm" | "md" | "lg";
 };
 
 const EditableComment = ({
@@ -18,6 +19,7 @@ const EditableComment = ({
   isEditable,
   setIsEditable,
   classname,
+  size,
 }: TimeWorkedEditableProps) => {
   return (
     <>
@@ -43,6 +45,7 @@ const EditableComment = ({
               defaultValue={comment}
               variant={"underlined"}
               name={"comment"}
+              size={size ? size : "md"}
             />
             <Button
               type={"submit"}
