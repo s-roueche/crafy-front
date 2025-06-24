@@ -1,11 +1,11 @@
-import axios from "axios";
+import api from "./axiosConfig.ts";
 import type { TimeWorked } from "./type.ts";
 
 export async function createCompany(
   businessName: string,
   userCreatorId: string,
 ): Promise<void> {
-  await axios.post(`http://localhost:3000/company`, {
+  await api.post(`company`, {
     businessName,
     userCreatorId,
   });
@@ -17,7 +17,7 @@ export async function createReport(
   monthReport: Date,
   comment: string,
 ): Promise<void> {
-  await axios.post(`http://localhost:3000/report`, {
+  await api.post(`report`, {
     clientId,
     userId,
     monthReport,
@@ -31,7 +31,7 @@ export async function createActivity(
   timeWorked: TimeWorked,
   comment: string,
 ): Promise<void> {
-  await axios.post(`http://localhost:3000/activity`, {
+  await api.post(`activity`, {
     date,
     reportId,
     timeWorked,

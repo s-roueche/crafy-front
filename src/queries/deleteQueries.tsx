@@ -1,6 +1,6 @@
-import axios from "axios";
+import api from "./axiosConfig.ts";
 
 export async function deleteActivity(id: string): Promise<void> {
-  const response = await axios.delete(`http://localhost:3000/activity/${id}`);
+  const response = await api.delete(`activity/${id}`);
   return response.data;
 }
