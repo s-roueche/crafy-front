@@ -32,23 +32,19 @@ function RouteComponent() {
   return (
     <>
       {reportQuery.isLoading && <Loading />}
-
       {reportQuery.isError && (
         <ErrorMessage error={reportQuery.error.message} />
       )}
-
       {reportQuery.isSuccess && (
-        <>
-          <div className={"grid grid-cols-[400px_1fr] gap-6"}>
-            <div>{reportInfosComponent}</div>
-            <div>
-              <ActivityTable
-                reportId={reportId}
-                reportMonth={new Date(reportQuery.data.monthReport)}
-              />
-            </div>
+        <div className={"grid grid-cols-[400px_1fr] gap-6"}>
+          <div>{reportInfosComponent}</div>
+          <div>
+            <ActivityTable
+              reportId={reportId}
+              reportMonth={new Date(reportQuery.data.monthReport)}
+            />
           </div>
-        </>
+        </div>
       )}
     </>
   );

@@ -24,7 +24,6 @@ const ReportInfos = ({
   clientId,
 }: ReportInfosProps) => {
   const { t } = useTranslation();
-
   const companyQuery = useQuery({
     queryKey: ["company", reportId],
     queryFn: () => getCompanyById(clientId),
@@ -39,15 +38,12 @@ const ReportInfos = ({
   return (
     <>
       {(companyQuery.isLoading || totalTimeQuery.isLoading) && <Loading />}
-
       {companyQuery.isError && (
         <ErrorMessage error={companyQuery.error.message} />
       )}
-
       {totalTimeQuery.isError && (
         <ErrorMessage error={totalTimeQuery.error.message} />
       )}
-
       {companyQuery.isSuccess && totalTimeQuery.isSuccess && (
         <>
           <div className={"text-2xl font-bold p-5 text-center"}>

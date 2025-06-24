@@ -16,7 +16,6 @@ type FormButtonProps = {
 const FormButton = ({ userId, formComponent }: FormButtonProps) => {
   const { t } = useTranslation();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
-
   const FormComponent = formComponent;
 
   return (

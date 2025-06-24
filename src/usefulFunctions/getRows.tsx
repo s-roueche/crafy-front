@@ -7,7 +7,7 @@ import type {
   Company,
   NullabbleTimeWorked,
   Report,
-} from "../queries/interfaces.tsx";
+} from "../queries/type.ts";
 import type { TFunction } from "i18next";
 
 type ActivityRow = {

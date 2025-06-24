@@ -80,13 +80,10 @@ const ReportsTable = ({ userId }: ReportsTableProps) => {
       {reportsQuery.isError && (
         <ErrorMessage error={reportsQuery.error.message} />
       )}
-
       {companiesQuery.isError && (
         <ErrorMessage error={companiesQuery.error.message} />
       )}
-
       {(companiesQuery.isLoading || reportsQuery.isLoading) && <Loading />}
-
       {reportsQuery.isSuccess && companiesQuery.isSuccess && (
         <Table
           aria-label="reports table"

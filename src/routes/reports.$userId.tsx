@@ -15,11 +15,9 @@ function RouteComponent() {
 
   return (
     <>
-      <>
-        <PageTitle title={t("Reports")} />
-        <ReportsTable userId={userId} />
-        <FormButton userId={userId} formComponent={ReportFormModal} />
-      </>
+      <PageTitle title={t("Reports")} />
+      <ReportsTable userId={userId} />
+      <FormButton userId={userId} formComponent={ReportFormModal} />
     </>
   );
 }

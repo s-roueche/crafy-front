@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { Company, Report } from "./interfaces.tsx";
+import type { Company, Report } from "./type.ts";
 
 export async function getAllReportsByUser(userId: string) {
   const response = await axios.get("http://localhost:3000/report");

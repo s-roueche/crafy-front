@@ -24,7 +24,6 @@ export default function CompanyForm(props: {
   const queryClient = useQueryClient();
 
   const companyMutation = useMutation({
-    mutationKey: ["add-company", userId],
     mutationFn: async (data: { businessName: string; userId: string }) => {
       await createCompany(data.businessName, data.userId);
     },
@@ -39,9 +38,7 @@ export default function CompanyForm(props: {
   }) => {
     onClose();
     e.preventDefault();
-
     const data = Object.fromEntries(new FormData(e.currentTarget));
-
     companyMutation.mutate({
       businessName: data.businessName as string,
       userId,

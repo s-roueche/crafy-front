@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { TimeWorked } from "./interfaces.tsx";
+import type { TimeWorked } from "./type.ts";
 
 export async function createCompany(
   businessName: string,

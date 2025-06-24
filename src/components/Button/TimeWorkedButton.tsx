@@ -1,9 +1,6 @@
 import { Button } from "@heroui/react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type {
-  NullabbleTimeWorked,
-  TimeWorked,
-} from "../../queries/interfaces.tsx";
+import type { NullabbleTimeWorked, TimeWorked } from "../../queries/type.ts";
 import { updateActivityTimeWorked } from "../../queries/putQueries.tsx";
 import { createActivity } from "../../queries/postQueries.tsx";
 import { deleteActivity } from "../../queries/deleteQueries.tsx";

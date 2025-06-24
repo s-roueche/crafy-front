@@ -1,15 +1,9 @@
-import {
-  Button,
-  Form,
-  Input,
-  Select,
-  SelectItem,
-} from "@heroui/react";
+import { Button, Form, Input, Select, SelectItem } from "@heroui/react";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAllCompaniesByUser } from "../../queries/getQueries.tsx";
-import type { Company } from "../../queries/interfaces.tsx";
+import type { Company } from "../../queries/type.ts";
 import { createReport } from "../../queries/postQueries.tsx";
 import Loading from "../Feedback/Loading.tsx";
 import ErrorMessage from "../Feedback/ErrorMessage.tsx";

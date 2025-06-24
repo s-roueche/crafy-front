@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/table";
-import type { Company } from "../../queries/interfaces.tsx";
+import type { Company } from "../../queries/type.ts";
 import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { getAllCompaniesByUser } from "../../queries/getQueries.tsx";

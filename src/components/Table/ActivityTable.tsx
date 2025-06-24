@@ -37,13 +37,10 @@ const ActivityTable = ({ reportId, reportMonth }: ActivityTableProps) => {
   return (
     <>
       <PageTitle title={t("Activities")} />
-
       {activitiesQuery.isError && (
         <ErrorMessage error={activitiesQuery.error.message} />
       )}
-
       {activitiesQuery.isLoading && <Loading />}
-
       {activitiesQuery.isSuccess && (
         <Table
           isStriped

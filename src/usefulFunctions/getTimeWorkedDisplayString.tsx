@@ -1,4 +1,4 @@
-import type { NullabbleTimeWorked } from "../queries/interfaces.tsx";
+import type { NullabbleTimeWorked } from "../queries/type.ts";
 import type { TFunction } from "i18next";
 
 export function getTimeWorkedDisplayString(
