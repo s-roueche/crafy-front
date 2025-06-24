@@ -53,3 +53,39 @@ export function onSubmitActivityComment(
     comment: data.comment as string,
   });
 }
+
+export async function onSubmitReportForm(
+  e: {
+    preventDefault: () => void;
+    currentTarget: HTMLFormElement | undefined;
+  },
+  onClose: () => void,
+  mutateReport: UseMutateFunction<
+    void,
+    Error,
+    {
+      clientId: string;
+      userId: string;
+      month: Date;
+      comment: string;
+    },
+    unknown
+  >,
+  clientId: string | undefined,
+  userId: string,
+) {
+  if (!clientId) {
+    throw new Error("No client entered");
+  }
+  onClose();
+  e.preventDefault();
+
+  const data = Object.fromEntries(new FormData(e.currentTarget));
+
+  mutateReport({
+    clientId: clientId,
+    userId,
+    month: new Date(data.month as string),
+    comment: data.comment as string,
+  });
+}

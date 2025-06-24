@@ -1,11 +1,10 @@
 import { Spinner } from "@heroui/react";
+import PageTitle from "../Layout/PageTitle.tsx";
 
 const Loading = ({ title }: { title?: string }) => {
   return (
     <>
-      <h1 className="text-2xl font-bold justify-self-center p-10">
-        {title ? title : ""}
-      </h1>
+      <PageTitle title={title ? title : ""} />
       <div className="flex justify-center items-center">
         <Spinner />
       </div>
