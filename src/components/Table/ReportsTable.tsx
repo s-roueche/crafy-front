@@ -7,8 +7,6 @@ import {
   TableHeader,
   TableRow,
 } from "@heroui/table";
-import type { Company, Report } from "../../queries/interfaces.tsx";
-import { formatDateMonthYear } from "../../usefulFunctions/dateHandling.tsx";
 import type { Selection } from "@heroui/react";
 import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -19,6 +17,7 @@ import {
 } from "../../queries/getQueries.tsx";
 import ErrorMessage from "../Feedback/ErrorMessage.tsx";
 import Loading from "../Feedback/Loading.tsx";
+import { getReportRows } from "../../usefulFunctions/getRows.tsx";
 
 type ReportsTableProps = {
   userId: string;
@@ -28,7 +27,7 @@ type Row = {
   key: string;
   month: string;
   client: string;
-  comment: string;
+  comment: string | null | undefined;
 };
 
 const ReportsTable = ({ userId }: ReportsTableProps) => {
@@ -61,23 +60,8 @@ const ReportsTable = ({ userId }: ReportsTableProps) => {
   ];
 
   const rows: Row[] =
-    reportsQuery.data && companiesQuery.data
-      ? reportsQuery.data.map((report: Report) => {
-          const client = companiesQuery.data.find(
-            (company: Company) => company.id === report.clientId,
-          );
-          const formattedDate = formatDateMonthYear(
-            new Date(report.monthReport),
-            t,
-          );
-
-          return {
-            key: report.id,
-            month: formattedDate,
-            client: client.businessName,
-            comment: report.comment,
-          };
-        })
+    reportsQuery.isSuccess && companiesQuery.isSuccess
+      ? getReportRows(reportsQuery.data, companiesQuery.data, t)
       : [];
 
   async function goToDetail(selection: Selection) {
@@ -116,10 +100,10 @@ const ReportsTable = ({ userId }: ReportsTableProps) => {
             )}
           </TableHeader>
           <TableBody items={rows}>
-            {(item) => (
-              <TableRow key={item.key}>
+            {(row) => (
+              <TableRow key={row.key}>
                 {(columnKey) => (
-                  <TableCell>{getKeyValue(item, columnKey)}</TableCell>
+                  <TableCell>{getKeyValue(row, columnKey)}</TableCell>
                 )}
               </TableRow>
             )}

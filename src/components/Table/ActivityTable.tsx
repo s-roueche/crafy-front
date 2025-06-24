@@ -15,7 +15,7 @@ import { getActivitiesByReport } from "../../queries/getQueries.tsx";
 import PageTitle from "../Layout/PageTitle.tsx";
 import Loading from "../Feedback/Loading.tsx";
 import ErrorMessage from "../Feedback/ErrorMessage.tsx";
-import getActivities from "../../usefulFunctions/getActivities.tsx";
+import { getActivityRows } from "../../usefulFunctions/getRows.tsx";
 
 type ActivityTableProps = {
   reportId: string;
@@ -31,7 +31,7 @@ const ActivityTable = ({ reportId, reportMonth }: ActivityTableProps) => {
   });
 
   const rows = activitiesQuery.isSuccess
-    ? getActivities(reportMonth, activitiesQuery.data)
+    ? getActivityRows(reportMonth, activitiesQuery.data)
     : [];
 
   return (
