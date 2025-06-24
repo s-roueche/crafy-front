@@ -11,17 +11,18 @@ import {
   getNumberOfDaysInMonth,
 } from "../../usefulFunctions/dateHandling.tsx";
 import { useTranslation } from "react-i18next";
-import type {
-  Activity,
-  NullabbleTimeWorked,
-} from "../../queries/interfaces.tsx";
+import type { NullabbleTimeWorked } from "../../queries/interfaces.tsx";
 import TimeWorkedButton from "../Button/TimeWorkedButton.tsx";
 import EditableActivityComment from "../Editables/EditableActivityComment.tsx";
+import { useQuery } from "@tanstack/react-query";
+import { getActivitiesByReport } from "../../queries/getQueries.tsx";
+import PageTitle from "../Layout/PageTitle.tsx";
+import Loading from "../Feedback/Loading.tsx";
+import ErrorMessage from "../Feedback/ErrorMessage.tsx";
 
 type ActivityTableProps = {
   reportId: string;
   reportMonth: Date;
-  activities: Activity[];
 };
 
 type Item = {
@@ -32,12 +33,13 @@ type Item = {
   comment: string;
 };
 
-const ActivityTable = ({
-  reportId,
-  reportMonth,
-  activities,
-}: ActivityTableProps) => {
+const ActivityTable = ({ reportId, reportMonth }: ActivityTableProps) => {
   const { t } = useTranslation();
+  const activitiesQuery = useQuery({
+    queryKey: ["activities", reportId],
+    queryFn: () => getActivitiesByReport(reportId),
+    retryDelay: 1000,
+  });
 
   const rows: Item[] = [];
 
@@ -51,68 +53,76 @@ const ActivityTable = ({
     });
   }
 
-  for (const activity of activities) {
-    const item = rows[new Date(activity.date).getDate() - 1];
-    item.id = activity.id;
-    item.timeWorked = activity.timeWorked;
-    item.comment = activity.comment ? activity.comment : "";
+  if (activitiesQuery.isSuccess) {
+    for (const activity of activitiesQuery.data) {
+      const item = rows[new Date(activity.date).getDate() - 1];
+      item.id = activity.id;
+      item.timeWorked = activity.timeWorked;
+      item.comment = activity.comment ? activity.comment : "";
+    }
   }
 
   return (
     <>
-      <div className={"text-2xl font-bold p-5 text-center"}>
-        {t("Activities")}
-      </div>
+      <PageTitle title={t("Activities")} />
 
-      <Table
-        isStriped
-        fullWidth
-        sortDescriptor={{ column: "activity", direction: "ascending" }}
-      >
-        <TableHeader>
-          <TableColumn key={"date"} className={"text-medium"}>
-            {" "}
-            {t("Date")}{" "}
-          </TableColumn>
-          <TableColumn key={"timeWorked"} className={"text-medium"}>
-            {" "}
-            {t("TimeWorked")}{" "}
-          </TableColumn>
-          <TableColumn key={"comment"} className={"text-medium"}>
-            {" "}
-            {t("Comment")}{" "}
-          </TableColumn>
-        </TableHeader>
-        <TableBody items={rows}>
-          {(item) => (
-            <TableRow key={item.key}>
-              <TableCell>
-                <div className={"text-medium"}>
-                  {formatDateDayOfTheWeek(item.date, t)}
-                </div>
-              </TableCell>
-              <TableCell className={"flex justify-center"}>
-                <TimeWorkedButton
-                  reportId={reportId}
-                  activityTimeWorked={item.timeWorked}
-                  activityDate={item.date}
-                  activityId={item.id}
-                />
-              </TableCell>
-              <TableCell className={"justify-items-end"}>
-                <div className={"italic"}>
-                  <EditableActivityComment
-                    isVisible={item.timeWorked != "NONE"}
-                    comment={item.comment}
-                    activityId={item.id}
+      {activitiesQuery.isError && (
+        <ErrorMessage error={activitiesQuery.error.message} />
+      )}
+
+      {activitiesQuery.isLoading && <Loading />}
+
+      {activitiesQuery.isSuccess && (
+        <Table
+          isStriped
+          fullWidth
+          sortDescriptor={{ column: "activity", direction: "ascending" }}
+        >
+          <TableHeader>
+            <TableColumn key={"date"} className={"text-medium"}>
+              {" "}
+              {t("Date")}{" "}
+            </TableColumn>
+            <TableColumn key={"timeWorked"} className={"text-medium"}>
+              {" "}
+              {t("TimeWorked")}{" "}
+            </TableColumn>
+            <TableColumn key={"comment"} className={"text-medium"}>
+              {" "}
+              {t("Comment")}{" "}
+            </TableColumn>
+          </TableHeader>
+          <TableBody items={rows}>
+            {(item) => (
+              <TableRow key={item.key}>
+                <TableCell>
+                  <div className={"text-medium"}>
+                    {formatDateDayOfTheWeek(item.date, t)}
+                  </div>
+                </TableCell>
+                <TableCell className={"flex justify-center"}>
+                  <TimeWorkedButton
                     reportId={reportId}
+                    activityTimeWorked={item.timeWorked}
+                    activityDate={item.date}
+                    activityId={item.id}
                   />
-                </div>
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+                </TableCell>
+                <TableCell className={"justify-items-end"}>
+                  <div className={"italic"}>
+                    <EditableActivityComment
+                      isVisible={item.timeWorked != "NONE"}
+                      comment={item.comment}
+                      activityId={item.id}
+                      reportId={reportId}
+                    />
+                  </div>
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      )}
     </>
   );
 };
