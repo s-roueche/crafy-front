@@ -90,6 +90,7 @@ const ReportsTable = ({ userId }: ReportsTableProps) => {
           selectionMode={"single"}
           selectedKeys={[]}
           onSelectionChange={goToDetail}
+          disableAnimation
         >
           <TableHeader columns={columns}>
             {(column) => (
@@ -103,7 +104,10 @@ const ReportsTable = ({ userId }: ReportsTableProps) => {
           </TableHeader>
           <TableBody items={rows}>
             {(row) => (
-              <TableRow key={row.key}>
+              <TableRow
+                key={row.key}
+                className={"hover:!bg-teal-100 transition-colors"}
+              >
                 {(columnKey) => (
                   <TableCell>{getKeyValue(row, columnKey)}</TableCell>
                 )}
