@@ -11,7 +11,7 @@ export const Route = createRootRoute({
 function RootComponent() {
   return (
     <>
-      <div className="flex min-h-screen">
+      <div className={"flex min-h-screen bg-teal-50 text-teal-950"}>
         <SideBar />
         <Divider orientation="vertical" className="h-auto" />
         <div className="flex-1 p-6">

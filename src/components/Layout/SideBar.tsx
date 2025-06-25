@@ -8,19 +8,15 @@ const SideBar = () => {
   const router = useRouter();
 
   return (
-    <div className="w-64 p-4 border-r border-divider">
-      <Listbox>
+    <div className="w-64 p-4 border-r border-divider bg-teal-300">
+      <Listbox className={"text-teal-900"} disableAnimation>
         <ListboxSection showDivider>
           <ListboxItem
             startContent={<FaPenSquare />}
             key={"app_name"}
-            href={
-              router.buildLocation({
-                to: "/$userId",
-                params: { userId: "b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5" },
-              }).href
-            }
+            href={"/"}
             variant={"light"}
+            className={"hover:!text-teal-600 transition-colors"}
           >
             <div className="text-lg">Crafy</div>
           </ListboxItem>
@@ -34,6 +30,7 @@ const SideBar = () => {
                 params: { userId: "b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5" },
               }).href
             }
+            className={"hover:!bg-teal-400 transition-colors"}
           >
             <div className="text-lg">{t("Reports")}</div>
           </ListboxItem>
@@ -45,6 +42,7 @@ const SideBar = () => {
                 params: { userId: "b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5" },
               }).href
             }
+            className={"hover:!bg-teal-400 transition-colors"}
           >
             <div className="text-lg">{t("Companies")}</div>
           </ListboxItem>

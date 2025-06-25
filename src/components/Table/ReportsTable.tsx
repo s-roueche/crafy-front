@@ -93,7 +93,12 @@ const ReportsTable = ({ userId }: ReportsTableProps) => {
         >
           <TableHeader columns={columns}>
             {(column) => (
-              <TableColumn key={column.key}>{column.label}</TableColumn>
+              <TableColumn
+                key={column.key}
+                className={"bg-teal-100 text-teal-900"}
+              >
+                {column.label}
+              </TableColumn>
             )}
           </TableHeader>
           <TableBody items={rows}>

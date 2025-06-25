@@ -105,6 +105,7 @@ const TimeWorkedButton = ({
           onPress={() => {
             changeTimeWorked(activityTimeWorked, activityDate, activityId);
           }}
+          className={"bg-teal-300"}
         >
           {getTimeWorkedDisplayString(activityTimeWorked, t)}
         </Button>

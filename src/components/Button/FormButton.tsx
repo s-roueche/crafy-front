@@ -22,7 +22,7 @@ const FormButton = ({ userId, formComponent }: FormButtonProps) => {
     <>
       <Button
         onPress={() => onOpen()}
-        className={"p-5 mt-10"}
+        className={"p-5 mt-10 bg-teal-300"}
         startContent={<FiPlusCircle />}
       >
         {t("Add")}

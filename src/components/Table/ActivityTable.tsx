@@ -48,15 +48,24 @@ const ActivityTable = ({ reportId, reportMonth }: ActivityTableProps) => {
           sortDescriptor={{ column: "activity", direction: "ascending" }}
         >
           <TableHeader>
-            <TableColumn key={"date"} className={"text-medium"}>
+            <TableColumn
+              key={"date"}
+              className={"text-medium bg-teal-100 text-teal-900"}
+            >
               {" "}
               {t("Date")}{" "}
             </TableColumn>
-            <TableColumn key={"timeWorked"} className={"text-medium"}>
+            <TableColumn
+              key={"timeWorked"}
+              className={"text-medium bg-teal-100 text-teal-900"}
+            >
               {" "}
               {t("TimeWorked")}{" "}
             </TableColumn>
-            <TableColumn key={"comment"} className={"text-medium"}>
+            <TableColumn
+              key={"comment"}
+              className={"text-medium bg-teal-100 text-teal-900"}
+            >
               {" "}
               {t("Comment")}{" "}
             </TableColumn>

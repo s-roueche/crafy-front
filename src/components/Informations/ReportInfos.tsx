@@ -9,6 +9,7 @@ import {
 } from "../../queries/getQueries.tsx";
 import Loading from "../Feedback/Loading.tsx";
 import ErrorMessage from "../Feedback/ErrorMessage.tsx";
+import PageTitle from "../Layout/PageTitle.tsx";
 
 type ReportInfosProps = {
   reportMonth: Date;
@@ -46,9 +47,9 @@ const ReportInfos = ({
       )}
       {companyQuery.isSuccess && totalTimeQuery.isSuccess && (
         <>
-          <div className={"text-2xl font-bold p-5 text-center"}>
-            {t("Report")} {t("of")} {formatDateMonthYear(reportMonth, t)}
-          </div>
+          <PageTitle
+            title={`${t("Report")} ${t("of")} ${formatDateMonthYear(reportMonth, t)}`}
+          ></PageTitle>
 
           <Divider />
 

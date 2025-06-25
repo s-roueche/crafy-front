@@ -34,6 +34,7 @@ const EditableComment = ({
             size={"sm"}
             isIconOnly
             endContent={<FiEdit3 />}
+            className={"bg-teal-300"}
           ></Button>
         </div>
       )}
@@ -53,6 +54,7 @@ const EditableComment = ({
               size={"sm"}
               isIconOnly
               endContent={<FiCheck />}
+              className={"bg-teal-300"}
             ></Button>
           </div>
         </Form>

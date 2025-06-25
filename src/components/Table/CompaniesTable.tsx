@@ -51,6 +51,7 @@ const CompaniesTable = ({ userId }: CompaniesTableProps) => {
           aria-label="reports table"
           selectionMode={"single"}
           selectedKeys={[]}
+          disableAnimation
         >
           <TableHeader
             columns={[
@@ -61,12 +62,20 @@ const CompaniesTable = ({ userId }: CompaniesTableProps) => {
             ]}
           >
             {(column) => (
-              <TableColumn key={column.key}>{column.label}</TableColumn>
+              <TableColumn
+                key={column.key}
+                className={"bg-teal-100 text-teal-900"}
+              >
+                {column.label}
+              </TableColumn>
             )}
           </TableHeader>
           <TableBody items={companyRows}>
             {(item) => (
-              <TableRow key={item.key}>
+              <TableRow
+                key={item.key}
+                className={"hover:!bg-teal-100 transition-colors"}
+              >
                 {(columnKey) => (
                   <TableCell>{getKeyValue(item, columnKey)}</TableCell>
                 )}
