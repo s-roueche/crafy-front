@@ -2,9 +2,9 @@ import { Button, useDisclosure } from "@heroui/react";
 import { FiPlusCircle } from "icons-react/fi";
 import { useTranslation } from "react-i18next";
 import type { ComponentType } from "react";
+import { useAuth } from "react-oidc-context";
 
 type FormButtonProps = {
-  userId: string;
   formComponent: ComponentType<{
     isOpen: boolean;
     onOpenChange: () => void;
@@ -13,9 +13,11 @@ type FormButtonProps = {
   }>;
 };
 
-const FormButton = ({ userId, formComponent }: FormButtonProps) => {
+const FormButton = ({ formComponent }: FormButtonProps) => {
   const { t } = useTranslation();
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const auth = useAuth();
+  const userId = auth.user ? auth.user.profile.sub : "";
   const FormComponent = formComponent;
 
   return (

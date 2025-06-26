@@ -1,14 +1,12 @@
 import { Listbox, ListboxItem, ListboxSection } from "@heroui/react";
 import { FaPenSquare } from "icons-react/fa";
 import { useTranslation } from "react-i18next";
-import { useRouter } from "@tanstack/react-router";
 
 const SideBar = () => {
   const { t } = useTranslation();
-  const router = useRouter();
 
   return (
-    <div className="w-64 p-4 border-r border-divider bg-teal-300">
+    <div className="w-64 p-4 border-r border-divider bg-teal-300 h-full flex-initial">
       <Listbox className={"text-teal-900"} disableAnimation>
         <ListboxSection showDivider>
           <ListboxItem
@@ -24,24 +22,14 @@ const SideBar = () => {
         <ListboxSection>
           <ListboxItem
             key={"reports"}
-            href={
-              router.buildLocation({
-                to: "/reports/$userId",
-                params: { userId: "b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5" },
-              }).href
-            }
+            href={"/reports"}
             className={"hover:!bg-teal-400 transition-colors"}
           >
             <div className="text-lg">{t("Reports")}</div>
           </ListboxItem>
           <ListboxItem
             key={"companies"}
-            href={
-              router.buildLocation({
-                to: "/companies/$userId",
-                params: { userId: "b5baa5fc-4211-11f0-a9d1-aa8a5f2ad6c5" },
-              }).href
-            }
+            href={"/companies"}
             className={"hover:!bg-teal-400 transition-colors"}
           >
             <div className="text-lg">{t("Companies")}</div>

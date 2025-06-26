@@ -18,10 +18,7 @@ import {
 import ErrorMessage from "../Feedback/ErrorMessage.tsx";
 import Loading from "../Feedback/Loading.tsx";
 import { getReportRows } from "../../usefulFunctions/getRows.tsx";
-
-type ReportsTableProps = {
-  userId: string;
-};
+import { useAuth } from "react-oidc-context";
 
 type Row = {
   key: string;
@@ -30,9 +27,11 @@ type Row = {
   comment: string | null | undefined;
 };
 
-const ReportsTable = ({ userId }: ReportsTableProps) => {
+const ReportsTable = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+  const auth = useAuth();
+  const userId = auth.user ? auth.user.profile.sub : "";
   const reportsQuery = useQuery({
     queryKey: ["allReports", userId],
     queryFn: () => getAllReportsByUser(userId),

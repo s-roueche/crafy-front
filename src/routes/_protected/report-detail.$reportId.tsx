@@ -1,12 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { getReportById } from "../queries/getQueries.tsx";
-import Loading from "../components/Feedback/Loading.tsx";
-import ReportInfos from "../components/Informations/ReportInfos.tsx";
-import ErrorMessage from "../components/Feedback/ErrorMessage.tsx";
-import ActivityTable from "../components/Table/ActivityTable.tsx";
+import { getReportById } from "../../queries/getQueries.tsx";
+import Loading from "../../components/Feedback/Loading.tsx";
+import ReportInfos from "../../components/Informations/ReportInfos.tsx";
+import ErrorMessage from "../../components/Feedback/ErrorMessage.tsx";
+import ActivityTable from "../../components/Table/ActivityTable.tsx";
 
-export const Route = createFileRoute("/report-detail/$userId/$reportId")({
+export const Route = createFileRoute("/_protected/report-detail/$reportId")({
   component: RouteComponent,
 });
 

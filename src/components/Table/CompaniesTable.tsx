@@ -13,18 +13,17 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllCompaniesByUser } from "../../queries/getQueries.tsx";
 import ErrorMessage from "../Feedback/ErrorMessage.tsx";
 import Loading from "../Feedback/Loading.tsx";
-
-type CompaniesTableProps = {
-  userId: string;
-};
+import { useAuth } from "react-oidc-context";
 
 type Row = {
   key: string;
   name: string;
 };
 
-const CompaniesTable = ({ userId }: CompaniesTableProps) => {
+const CompaniesTable = () => {
   const { t } = useTranslation();
+  const auth = useAuth();
+  const userId = auth.user ? auth.user.profile.sub : "";
   const companiesQuery = useQuery({
     queryKey: ["allCompanies", userId],
     queryFn: () => getAllCompaniesByUser(userId),

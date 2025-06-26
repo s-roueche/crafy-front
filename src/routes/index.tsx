@@ -1,17 +1,48 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate, Outlet } from "@tanstack/react-router";
 import "../i18n.tsx";
-import { useTranslation } from "react-i18next";
+import { useAuth } from "react-oidc-context";
+import Loading from "../components/Feedback/Loading.tsx";
+import ErrorMessage from "../components/Feedback/ErrorMessage.tsx";
+import { Button } from "@heroui/react";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { t } = useTranslation();
+  const auth = useAuth();
+
+  console.log({ auth });
+  if (auth.isLoading) {
+    return <Loading />;
+  }
+
+  if (auth.error) {
+    return (
+      <ErrorMessage
+        error={`(Authentification) ${auth.error.message}`}
+      ></ErrorMessage>
+    );
+  }
+
+  if (auth.isAuthenticated) {
+    return (
+      <>
+        <Navigate to={"/welcome"} />
+      </>
+    );
+  }
 
   return (
-    <h1 className="text-4xl font-bold justify-self-center text-teal-900">
-      {t("WelcomeToCrafy")}
-    </h1>
+    <div>
+      <Button
+        onPress={() => {
+          auth.signinRedirect();
+        }}
+      >
+        Sign in
+      </Button>
+      <Outlet />
+    </div>
   );
 }

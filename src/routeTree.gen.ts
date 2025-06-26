@@ -11,12 +11,19 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ProtectedImport } from './routes/_protected'
 import { Route as IndexImport } from './routes/index'
-import { Route as ReportsUserIdImport } from './routes/reports.$userId'
-import { Route as CompaniesUserIdImport } from './routes/companies.$userId'
-import { Route as ReportDetailUserIdReportIdImport } from './routes/report-detail.$userId.$reportId'
+import { Route as ProtectedWelcomeImport } from './routes/_protected/welcome'
+import { Route as ProtectedReportsImport } from './routes/_protected/reports'
+import { Route as ProtectedCompaniesImport } from './routes/_protected/companies'
+import { Route as ProtectedReportDetailReportIdImport } from './routes/_protected/report-detail.$reportId'
 
 // Create/Update Routes
+
+const ProtectedRoute = ProtectedImport.update({
+  id: '/_protected',
+  getParentRoute: () => rootRoute,
+} as any)
 
 const IndexRoute = IndexImport.update({
   id: '/',
@@ -24,25 +31,30 @@ const IndexRoute = IndexImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const ReportsUserIdRoute = ReportsUserIdImport.update({
-  id: '/reports/$userId',
-  path: '/reports/$userId',
-  getParentRoute: () => rootRoute,
+const ProtectedWelcomeRoute = ProtectedWelcomeImport.update({
+  id: '/welcome',
+  path: '/welcome',
+  getParentRoute: () => ProtectedRoute,
 } as any)
 
-const CompaniesUserIdRoute = CompaniesUserIdImport.update({
-  id: '/companies/$userId',
-  path: '/companies/$userId',
-  getParentRoute: () => rootRoute,
+const ProtectedReportsRoute = ProtectedReportsImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => ProtectedRoute,
 } as any)
 
-const ReportDetailUserIdReportIdRoute = ReportDetailUserIdReportIdImport.update(
-  {
-    id: '/report-detail/$userId/$reportId',
-    path: '/report-detail/$userId/$reportId',
-    getParentRoute: () => rootRoute,
-  } as any,
-)
+const ProtectedCompaniesRoute = ProtectedCompaniesImport.update({
+  id: '/companies',
+  path: '/companies',
+  getParentRoute: () => ProtectedRoute,
+} as any)
+
+const ProtectedReportDetailReportIdRoute =
+  ProtectedReportDetailReportIdImport.update({
+    id: '/report-detail/$reportId',
+    path: '/report-detail/$reportId',
+    getParentRoute: () => ProtectedRoute,
+  } as any)
 
 // Populate the FileRoutesByPath interface
 
@@ -55,88 +67,128 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
-    '/companies/$userId': {
-      id: '/companies/$userId'
-      path: '/companies/$userId'
-      fullPath: '/companies/$userId'
-      preLoaderRoute: typeof CompaniesUserIdImport
+    '/_protected': {
+      id: '/_protected'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof ProtectedImport
       parentRoute: typeof rootRoute
     }
-    '/reports/$userId': {
-      id: '/reports/$userId'
-      path: '/reports/$userId'
-      fullPath: '/reports/$userId'
-      preLoaderRoute: typeof ReportsUserIdImport
-      parentRoute: typeof rootRoute
+    '/_protected/companies': {
+      id: '/_protected/companies'
+      path: '/companies'
+      fullPath: '/companies'
+      preLoaderRoute: typeof ProtectedCompaniesImport
+      parentRoute: typeof ProtectedImport
     }
-    '/report-detail/$userId/$reportId': {
-      id: '/report-detail/$userId/$reportId'
-      path: '/report-detail/$userId/$reportId'
-      fullPath: '/report-detail/$userId/$reportId'
-      preLoaderRoute: typeof ReportDetailUserIdReportIdImport
-      parentRoute: typeof rootRoute
+    '/_protected/reports': {
+      id: '/_protected/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ProtectedReportsImport
+      parentRoute: typeof ProtectedImport
+    }
+    '/_protected/welcome': {
+      id: '/_protected/welcome'
+      path: '/welcome'
+      fullPath: '/welcome'
+      preLoaderRoute: typeof ProtectedWelcomeImport
+      parentRoute: typeof ProtectedImport
+    }
+    '/_protected/report-detail/$reportId': {
+      id: '/_protected/report-detail/$reportId'
+      path: '/report-detail/$reportId'
+      fullPath: '/report-detail/$reportId'
+      preLoaderRoute: typeof ProtectedReportDetailReportIdImport
+      parentRoute: typeof ProtectedImport
     }
   }
 }
 
 // Create and export the route tree
 
+interface ProtectedRouteChildren {
+  ProtectedCompaniesRoute: typeof ProtectedCompaniesRoute
+  ProtectedReportsRoute: typeof ProtectedReportsRoute
+  ProtectedWelcomeRoute: typeof ProtectedWelcomeRoute
+  ProtectedReportDetailReportIdRoute: typeof ProtectedReportDetailReportIdRoute
+}
+
+const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedCompaniesRoute: ProtectedCompaniesRoute,
+  ProtectedReportsRoute: ProtectedReportsRoute,
+  ProtectedWelcomeRoute: ProtectedWelcomeRoute,
+  ProtectedReportDetailReportIdRoute: ProtectedReportDetailReportIdRoute,
+}
+
+const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
+  ProtectedRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/companies/$userId': typeof CompaniesUserIdRoute
-  '/reports/$userId': typeof ReportsUserIdRoute
-  '/report-detail/$userId/$reportId': typeof ReportDetailUserIdReportIdRoute
+  '': typeof ProtectedRouteWithChildren
+  '/companies': typeof ProtectedCompaniesRoute
+  '/reports': typeof ProtectedReportsRoute
+  '/welcome': typeof ProtectedWelcomeRoute
+  '/report-detail/$reportId': typeof ProtectedReportDetailReportIdRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/companies/$userId': typeof CompaniesUserIdRoute
-  '/reports/$userId': typeof ReportsUserIdRoute
-  '/report-detail/$userId/$reportId': typeof ReportDetailUserIdReportIdRoute
+  '': typeof ProtectedRouteWithChildren
+  '/companies': typeof ProtectedCompaniesRoute
+  '/reports': typeof ProtectedReportsRoute
+  '/welcome': typeof ProtectedWelcomeRoute
+  '/report-detail/$reportId': typeof ProtectedReportDetailReportIdRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
-  '/companies/$userId': typeof CompaniesUserIdRoute
-  '/reports/$userId': typeof ReportsUserIdRoute
-  '/report-detail/$userId/$reportId': typeof ReportDetailUserIdReportIdRoute
+  '/_protected': typeof ProtectedRouteWithChildren
+  '/_protected/companies': typeof ProtectedCompaniesRoute
+  '/_protected/reports': typeof ProtectedReportsRoute
+  '/_protected/welcome': typeof ProtectedWelcomeRoute
+  '/_protected/report-detail/$reportId': typeof ProtectedReportDetailReportIdRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/companies/$userId'
-    | '/reports/$userId'
-    | '/report-detail/$userId/$reportId'
+    | ''
+    | '/companies'
+    | '/reports'
+    | '/welcome'
+    | '/report-detail/$reportId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/companies/$userId'
-    | '/reports/$userId'
-    | '/report-detail/$userId/$reportId'
+    | ''
+    | '/companies'
+    | '/reports'
+    | '/welcome'
+    | '/report-detail/$reportId'
   id:
     | '__root__'
     | '/'
-    | '/companies/$userId'
-    | '/reports/$userId'
-    | '/report-detail/$userId/$reportId'
+    | '/_protected'
+    | '/_protected/companies'
+    | '/_protected/reports'
+    | '/_protected/welcome'
+    | '/_protected/report-detail/$reportId'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CompaniesUserIdRoute: typeof CompaniesUserIdRoute
-  ReportsUserIdRoute: typeof ReportsUserIdRoute
-  ReportDetailUserIdReportIdRoute: typeof ReportDetailUserIdReportIdRoute
+  ProtectedRoute: typeof ProtectedRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CompaniesUserIdRoute: CompaniesUserIdRoute,
-  ReportsUserIdRoute: ReportsUserIdRoute,
-  ReportDetailUserIdReportIdRoute: ReportDetailUserIdReportIdRoute,
+  ProtectedRoute: ProtectedRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -150,22 +202,36 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
-        "/companies/$userId",
-        "/reports/$userId",
-        "/report-detail/$userId/$reportId"
+        "/_protected"
       ]
     },
     "/": {
       "filePath": "index.tsx"
     },
-    "/companies/$userId": {
-      "filePath": "companies.$userId.tsx"
+    "/_protected": {
+      "filePath": "_protected.tsx",
+      "children": [
+        "/_protected/companies",
+        "/_protected/reports",
+        "/_protected/welcome",
+        "/_protected/report-detail/$reportId"
+      ]
     },
-    "/reports/$userId": {
-      "filePath": "reports.$userId.tsx"
+    "/_protected/companies": {
+      "filePath": "_protected/companies.tsx",
+      "parent": "/_protected"
     },
-    "/report-detail/$userId/$reportId": {
-      "filePath": "report-detail.$userId.$reportId.tsx"
+    "/_protected/reports": {
+      "filePath": "_protected/reports.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/welcome": {
+      "filePath": "_protected/welcome.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/report-detail/$reportId": {
+      "filePath": "_protected/report-detail.$reportId.tsx",
+      "parent": "/_protected"
     }
   }
 }
