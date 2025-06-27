@@ -38,3 +38,7 @@ export async function createActivity(
     comment,
   });
 }
+
+export async function createUser(userId: string): Promise<void> {
+  await api.post(`user`, { id: userId });
+}

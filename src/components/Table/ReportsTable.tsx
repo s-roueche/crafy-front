@@ -79,7 +79,7 @@ const ReportsTable = () => {
       {reportsQuery.isError && (
         <ErrorMessage error={reportsQuery.error.message} />
       )}
-      {companiesQuery.isError && (
+      {reportsQuery.isSuccess && companiesQuery.isError && (
         <ErrorMessage error={companiesQuery.error.message} />
       )}
       {(companiesQuery.isLoading || reportsQuery.isLoading) && <Loading />}

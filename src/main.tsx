@@ -4,6 +4,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { AuthProvider } from "react-oidc-context";
+import AuthSync from "./components/AuthSync.tsx";
 
 const queryClient = new QueryClient();
 
@@ -18,6 +19,7 @@ const cognitoAuthConfig = {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <AuthProvider {...cognitoAuthConfig}>
+      <AuthSync />
       <QueryClientProvider client={queryClient}>
         <App />
       </QueryClientProvider>

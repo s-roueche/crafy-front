@@ -12,19 +12,6 @@ export const Route = createFileRoute("/")({
 function RouteComponent() {
   const auth = useAuth();
 
-  console.log({ auth });
-  if (auth.isLoading) {
-    return <Loading />;
-  }
-
-  if (auth.error) {
-    return (
-      <ErrorMessage
-        error={`(Authentification) ${auth.error.message}`}
-      ></ErrorMessage>
-    );
-  }
-
   if (auth.isAuthenticated) {
     return (
       <>
@@ -34,15 +21,23 @@ function RouteComponent() {
   }
 
   return (
-    <div>
-      <Button
-        onPress={() => {
-          auth.signinRedirect();
-        }}
-      >
-        Sign in
-      </Button>
-      <Outlet />
-    </div>
+    <>
+      {auth.isLoading && <Loading />}
+      {auth.error && (
+        <ErrorMessage
+          error={`(Authentification) ${auth.error.message}`}
+        ></ErrorMessage>
+      )}
+      <>
+        <Button
+          onPress={() => {
+            auth.signinRedirect();
+          }}
+        >
+          Sign in
+        </Button>
+        <Outlet />
+      </>
+    </>
   );
 }

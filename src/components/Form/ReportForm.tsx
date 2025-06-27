@@ -8,10 +8,10 @@ import { createReport } from "../../queries/postQueries.tsx";
 import Loading from "../Feedback/Loading.tsx";
 import ErrorMessage from "../Feedback/ErrorMessage.tsx";
 import { onSubmitReportForm } from "../../usefulFunctions/submitFunctions.tsx";
+import { useAuth } from "react-oidc-context";
 
 type ReportFormProps = {
   onClose: () => void;
-  userId: string;
 };
 
 type Item = {
@@ -19,10 +19,12 @@ type Item = {
   label: string;
 };
 
-export default function ReportForm({ onClose, userId }: ReportFormProps) {
+export default function ReportForm({ onClose }: ReportFormProps) {
   const { t } = useTranslation();
   const [clientId, setClientId] = useState<string>();
   const queryClient = useQueryClient();
+  const auth = useAuth();
+  const userId = auth.user ? auth.user.profile.sub : "";
 
   const companiesQuery = useQuery({
     queryKey: ["clients", userId],
